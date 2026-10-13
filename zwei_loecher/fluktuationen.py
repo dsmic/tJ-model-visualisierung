@@ -1,7 +1,7 @@
 """Paarbewegung mit gelockertem Neel: Vertauschungen, die keine Reparaturen sind (J-Fluktuationen).
 
 Reproduziert README.md, Abschnitt 7.6 (Ausgabe als Markdown).
-Start: python fluktuationen.py   (braucht tkinter wie tj_gui.py und numpy; Laufzeit etwa 3 Minuten)
+Start: python fluktuationen.py   (braucht tkinter wie tj_gui.py und numpy; Laufzeit etwa 5 Minuten)
 
 Zustaende: zwei Loecher auf Nachbarplaetzen (Paar) im 6x6-Fenster des 8x8-Bretts, Hintergrund Neel oder Neel
 mit genau einer Fluktuation (benachbartes, umgeklapptes Spinpaar) hoechstens DMAX vom Paar entfernt.
@@ -11,11 +11,12 @@ von Loechern oder falschen Spins. Vorzeichen wie tj_gui.swap_sign, ueber Bitmask
 """
 import random
 import time
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 
 import numpy as np
 
 import kohaerenz as K
+import zwei_loch as Z
 from zwei_loch import T
 
 L, N = T.L, T.N
@@ -161,8 +162,61 @@ def describe(states, k):
     return f"Paar {' '.join(f(s) for s in holes(up, dn))}, " + (f"Fluktuation {' '.join(f(s) for s in w)}" if w else "sauber")
 
 
+def heal_signs(conf, sign, region, depth=5):
+    """Alle Vorzeichen, mit denen reine Spin-Vertauschungen (in region) conf bis Neel heilen
+    (Breitensuche; 'Widerspruch', falls derselbe Zustand mit zwei Vorzeichen erreicht wird)."""
+    seen, out = {tuple(conf): sign}, set()
+    queue = deque([(list(conf), sign, 0)])
+    while queue:
+        c, sg, d = queue.popleft()
+        if not T.neel_violations(c):
+            out.add(sg)
+            continue
+        if d == depth:
+            continue
+        for a, b in T.BONDS:
+            if a in region and b in region and T.HOLE not in (c[a], c[b]) and c[a] != c[b]:
+                n2 = list(c)
+                s2 = sg * T.swap_sign(c, a, b)
+                n2[a], n2[b] = n2[b], n2[a]
+                key = tuple(n2)
+                if key in seen:
+                    if seen[key] != s2:
+                        out.add("Widerspruch")
+                    continue
+                seen[key] = s2
+                queue.append((n2, s2, d + 1))
+    return out
+
+
+def section_path_fluctuation():
+    """Weg UU eines Lochs bzw. eines Raupenpaars, mit und ohne vorher umgeklapptes Nachbarpaar."""
+    S = T.site
+    h, b, p1, p2 = S(5, 3), S(6, 3), S(4, 3), S(3, 3)
+    region = {S(x, y) for x in range(2, 8) for y in range(1, 6)}
+    single, pair = [(h, p1), (p1, p2)], [(h, p1), (b, h), (p1, p2), (h, p1)]
+
+    def signs(holes_, hops, flip):
+        conf = Z.neel_with_holes(holes_)
+        c, sg = list(conf), 1
+        for a, x in ([flip] if flip else []) + hops:
+            sg *= T.swap_sign(c, a, x)
+            c[a], c[x] = c[x], c[a]
+        return heal_signs(c, sg, region)
+    fmt = lambda st: " und ".join(f"{s:+d}" if isinstance(s, int) else s for s in sorted(st, key=str))
+    print("Weg UU ab (5,3); vorher wird ein richtiges Nachbarpaar umgeklappt (keine Reparatur). Danach wird mit "
+          "beliebigen reinen Spin-Vertauschungen bis Néel geheilt; angegeben sind alle dabei erreichbaren Vorzeichen.\n")
+    print("| umgeklapptes Paar | ein Loch | Raupenpaar (B von (6,3) folgt) |\n|---|---|---|")
+    for name, flip in (("keines", None), ("U mit UR (berührt den Weg)", (p1, S(4, 4))),
+                       ("U mit UL (berührt den Weg)", (p1, S(4, 2))), ("UU mit UUR (Zielplatz)", (p2, S(3, 4))),
+                       ("R mit UR (neben dem Weg)", (S(5, 4), S(4, 4)))):
+        print(f"| {name} | {fmt(signs([h], single, flip))} | {fmt(signs([h, b], pair, flip))} |")
+    print()
+
+
 def main():
     print("## 7.6 Gelockertes Néel: J-Fluktuationen\n")
+    section_path_fluctuation()
     ok, bad = check_signs()
     print(f"Bitmasken-Vorzeichen gegen tj_gui.swap_sign: {ok} gleich, {bad} verschieden.\n")
     rnd, ok, bad = random.Random(2), 0, 0

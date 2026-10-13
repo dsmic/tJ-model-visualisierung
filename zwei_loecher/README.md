@@ -21,7 +21,9 @@ Kurzfassung:
   und zwar im d-Wellen-Muster: Die Reparatur gleicht das Austausch-Vorzeichen aus. Ein einzelnes Loch wird
   durch solche Schritte kohärent, bleibt aber frustriert (−1 pro Schritt). Lockert man Néel und erlaubt
   J-Fluktuationen (Vertauschungen, die keine Reparaturen sind), kommt auch für Paare Frustration zurück
-  (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet.
+  (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet. Die Raupe
+  ist dagegen immun gegen Fluktuationen auf ihrem Weg (der Schwanz bewegt jeden Spin ein zweites Mal), ein
+  einzelnes Loch nicht.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -36,7 +38,7 @@ Kurzfassung:
 | `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
-| `fluktuationen.py` | Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 3 min) | `python fluktuationen.py` |
+| `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
 
@@ -454,9 +456,36 @@ vollständig aufgezählt (6×6-Fenster, 1456 Zustände, 72 192 Übergänge); kei
 - **Die Frustration ist lokal.** Eine Fluktuation, die die Wege der Löcher nicht berührt, ändert nichts:
   Die Schleife zerfällt dann in eine reine Spinschleife (gerade Zahl von Vertauschungen, Marshall-Regel) und
   eine saubere Paarschleife.
+
+**Fluktuation auf dem Weg: einzelnes Loch gegen Raupe.** Weg UU ab (5,3). Vorher wird ein richtiges
+Nachbarpaar umgeklappt (keine Reparatur), danach wird mit beliebigen reinen Spin-Vertauschungen bis Néel
+geheilt (Breitensuche); angegeben sind alle dabei erreichbaren Vorzeichen:
+
+| umgeklapptes Paar | ein Loch | Raupenpaar (B folgt von (6,3)) |
+|---|---|---|
+| keines | −1 | +1 |
+| U mit UR (berührt den Weg) | **+1** | +1 |
+| U mit UL (berührt den Weg) | **+1** | +1 |
+| UU mit UUR (Zielplatz) | **+1** | +1 |
+| R mit UR (neben dem Weg) | −1 | +1 |
+
+- **Ein Loch:** Eine Fluktuation, die den Weg berührt, dreht das Vorzeichen um; eine daneben nicht. In der
+  Form (−1)^(n↑): Das Loch bewegt jeden Spin auf seinem Weg einmal. Die Fluktuation tauscht aus, welcher
+  Spin (↑ oder ↓) dort steht, und ändert damit die Parität von n↑. Reine Spin-Vertauschungen zählen nicht.
+- **Raupe:** immer +1. Der Schwanz bewegt jeden Spin, den der Kopf verschoben hat, ein zweites Mal, also ist
+  n↑ immer gerade – in jedem Hintergrund. Die Raupe trägt keinen Phase-String; als Vorzeichen bleibt nur der
+  Lochaustausch (Wende). Voraussetzung: Zwischen Kopf- und Schwanzsprung bewegt kein J-Prozess den
+  verschobenen Spin.
+- **Pivot und Domino:** Die beiden Partner bewegen verschiedene Spins je einmal. Der Lochaustausch ist
+  ausgeglichen (7.3), aber das Vorzeichen hängt vom Hintergrund ab; daher die Frustration in der Tabelle oben.
+
+| Paarschritt | geschützt gegen Wende (Lochaustausch) | geschützt gegen Fluktuationen im Hintergrund |
+|---|---|---|
+| Raupe | nein | ja |
+| Pivot, Domino | ja (d-Wellen-Eichung) | nein |
 - **Deutung (Hypothese):** Das Paar bleibt kohärent, solange Spinfluktuationen in seiner Nähe selten sind
-  oder als feste Singulett-Paare mitlaufen; viele bewegliche Fluktuationen um das Paar herum frustrieren
-  es. Das passt zum Bild der Phase-String-Theorie, nach dem Supraleitung kurzreichweitige, gepaarte
+  oder als feste Singulett-Paare mitlaufen, oder solange es sich überwiegend als Raupe bewegt; viele
+  bewegliche Fluktuationen um ein Paar, das sich über Pivot und Domino bewegt, frustrieren es. Das passt zum Bild der Phase-String-Theorie, nach dem Supraleitung kurzreichweitige, gepaarte
   Spinkorrelationen braucht (aus dem Gedächtnis). Geprüft ist hier nur der Fall einer einzelnen Fluktuation.
 
 
