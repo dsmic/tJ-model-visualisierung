@@ -14,7 +14,12 @@ Kurzfassung:
   wenn sich die Wege kreuzen oder ein Weg eine Schleife hat.
 - **Kreuzung:** Repariert J die Spur von A, *bevor* B sie kreuzt, ist das Vorzeichen entgegengesetzt
   zu „Reparatur danach“ (in 100 von 100 Starts, Abschnitt 4). Folgt B dagegen direkt hinter A
-  („Spur teilen“), ist das Vorzeichen eindeutig: die Paarbewegung hat keinen Vorzeichenkonflikt.
+  („Spur teilen“, Raupe), ist das Vorzeichen eindeutig.
+- **Kohärenz und ODLRO (Abschnitt 7):** Für geschlossene Prozesse gilt Vorzeichen = (−1)^s · sgn(π_Loch)
+  (s = Zahl der Spin-Vertauschungen). Die reine Raupe ist dadurch frustriert (jede Wende ist ein
+  Lochaustausch, −1). Paarschritte mit genau einer Reparatur (Pivot, Domino) sind dagegen ganz unfrustriert,
+  und zwar im d-Wellen-Muster: Die Reparatur gleicht das Austausch-Vorzeichen aus. Ein einzelnes Loch wird
+  durch solche Schritte kohärent, bleibt aber frustriert (−1 pro Schritt).
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -28,6 +33,7 @@ Kurzfassung:
 | `tj_gui_2loch.py` | GUI: alles aus `tj_gui.py` plus zwei Leisten für zwei Löcher | `python tj_gui_2loch.py` |
 | `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
+| `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
 
@@ -204,7 +210,9 @@ unreparierte Spur von A wie eine π-Flusslinie, die J mit der Zeit abbaut; die L
 einander nicht (4.4).
 
 **M2 – Spur teilen → Lochpaar.** Folgt B direkt hinter A, repariert B die Spur von A selbst; die
-Paarbewegung kostet keine Spur-Energie und hat keinen Vorzeichenkonflikt (4.2, 4.3). Unabhängig laufende
+Paarbewegung kostet keine Spur-Energie und hat keinen Vorzeichenkonflikt, solange das Paar nicht wendet
+(4.2, 4.3). Einschränkung aus Abschnitt 7: Bei einer Wende tauschen Kopf und Schwanz die Plätze, das kostet
+−1; reine Raupenbewegung ist deshalb frustriert. Erst Paarschritte mit einer Reparatur heben das auf. Unabhängig laufende
 Löcher mit kreuzenden Spuren haben dagegen Weltlinien beider Vorzeichen, die sich teilweise auslöschen.
 Das bevorzugt den Paarkanal; ein gebundenes Paar ψ(R, r) = Φ(R)·φ(r) ist in den Einzelpositionen
 verschränkt.
@@ -295,7 +303,124 @@ eigenem Bindungsoperator gerechnet (Marshall-gedrehtes S·S).
   (singulettartig). Im Bild von M3: Beiträge verschiedener Reparatur-Zeitpunkte heben sich am Loch
   teilweise auf; eine Bindung, die im Mittel triplettartig wird, gibt es auf 4×4 nicht.
 
-## 7. Grenzen
+## 7. Kohärenz, Frustration und ODLRO (`kohaerenz.py`)
+
+Frage: Gibt es Bewegungen, bei denen die Reparaturen die Phasen *von selbst* so setzen, dass sich alle
+Weltlinien addieren (Voraussetzung für ODLRO, also langreichweitige Paarkohärenz)?
+
+### Was „frustriert“ und „unfrustriert“ heißt
+
+Für eine Bewegungsart (z. B. „Paar macht Raupenschritte“) wird eine effektive Hüpfmatrix M aufgestellt:
+M[Q, P] = Summe der Vorzeichen aller Prozesse, die von Lage P nach Lage Q führen. Das Vorzeichen eines
+einzelnen Eintrags ist Konvention (es hängt davon ab, welches Vorzeichen man einem Basiszustand gibt).
+Konventionsfrei ist nur das Produkt der Vorzeichen entlang einer **geschlossenen Schleife** P → Q → … → P.
+
+- **Unfrustriert:** Jede geschlossene Schleife hat das Produkt +1. Dann kann man die Basiszustände so
+  umeichen, dass alle Einträge positiv sind. Alle Wege zwischen zwei Lagen haben dasselbe Vorzeichen und
+  addieren sich; der Grundzustand ist knotenfrei (Perron–Frobenius) und gewinnt die volle Hüpfenergie:
+  λ_max(M) = λ_max(|M|).
+- **Frustriert:** Mindestens eine Schleife hat −1. Keine Umeichung macht alle Einträge positiv, so wie man
+  auf einem Dreieck nicht alle drei Bindungen antiferromagnetisch befriedigen kann (daher der Name).
+  Wege löschen sich teilweise aus, λ_max(M) < λ_max(|M|); im Extremfall gibt es ein flaches Band, das
+  Teilchen ist durch Interferenz lokalisiert.
+- Maß: λ_max(M) / λ_max(|M|) (1 = unfrustriert). Für ODLRO in einem Kanal braucht man, dass die
+  Bewegung in diesem Kanal unfrustriert ist (Feynman-Argument für Bosonen mit positiven Gewichten).
+
+### 7.1 Regel für geschlossene Prozesse
+
+    Vorzeichen eines geschlossenen Prozesses = (−1)^s · sgn(π_Loch)
+
+s = Zahl der Spin-Vertauschungen (J-Prozesse), π_Loch = Permutation der Löcher. **Lochsprünge tragen kein
+Vorzeichen.** Herleitung aus den Schritten 1–2 der Beweis-Skizze im Haupt-README: Das Vorzeichen ist
+sgn(π↑)·sgn(π↓); alle m + s Schritte sind Transpositionen, also sgn(π↑)·sgn(π↓)·sgn(π_Loch) = (−1)^(m+s);
+bei einem geschlossenen Prozess auf dem bipartiten Gitter ist m gerade. Numerisch: 130 von 130 geschlossenen
+Zufallsprozessen auf beliebigen Konfigurationen. Folgerung: Kohärent ist eine Bewegung genau dann, wenn auf
+jeder geschlossenen Weltlinie die Zahl der Reparaturen und die Zahl der Lochvertauschungen dieselbe Parität
+haben.
+
+### 7.2 Geschlossene Prozesse von Paaren und Löchern
+
+| Prozess | Löcher vertauscht | erreichbare Vorzeichen (Reparaturen beliebig eingestreut) |
+|---|---|---|
+| Raupe (B folgt A), Umläufe `RDLU`, `RRDLLU`, `RRDDLLUU`, `RRDDLULU`, `RRRDDDLLLUUU`, beide Untergitter | nein | nur +1 (10/10), Néel ohne J wiederhergestellt |
+| Raupe mit Wende (Kopf und Schwanz tauschen) | ja | nur **−1** |
+| zwei Raupenpaare tauschen die Plätze | ja (zwei Vertauschungen) | nur +1 |
+| zwei Raupenpaare, Umläufe kreuzen sich | nein | nur +1 |
+| zwei einzelne Löcher tauschen die Plätze | ja | nur −1 |
+| zwei einzelne Löcher, Umläufe kreuzen sich | nein | +1 und −1 |
+| ein Loch, Umlauf `RDLU` | – | +1 und −1 |
+
+Raupenpaare sehen einander nicht (keine Spur) und sind untereinander bosonisch. Die Wende eines einzelnen
+Paares ist aber ein Lochaustausch ohne Reparatur und kostet −1.
+
+### 7.3 Effektive Paarbewegung
+
+Paar aus Nachbarn im Néel-Hintergrund (8×8, alle 112 Bindungen), drei Schrittarten:
+**Raupe** (Kopf springt, Schwanz folgt, s = 0), **Pivot** (ein Loch läuft über die Plakettenecke zum anderen
+Nachbarn des Partners, danach eine Reparatur, s = 1), **Domino** (beide Löcher seitlich, danach eine
+Reparatur, s = 1). Alle Prozesse mit Gewicht 1.
+
+| Schrittarten | λ_max(M) | λ_max(\|M\|) | Verhältnis | Entartung |
+|---|---|---|---|---|
+| nur Raupe | 2,000 | 5,696 | 0,351 | 49 (flaches Band) |
+| nur Pivot + Domino | 5,719 | 5,719 | **1,000** | 1 |
+
+- Die reine Raupe ist stark frustriert, das Paar ist durch Interferenz lokalisiert (Wenden kosten −1).
+- Pivot und Domino sind **unfrustriert**. Die Umeichung, die alle Einträge positiv macht, ist genau das
+  d-Wellen-Muster: Vorzeichen von Δ(b)|Néel⟩ × (+1 waagerecht, −1 senkrecht), mit
+  Δ(i,j) = c_i↑ c_j↓ − c_i↓ c_j↑. Ein Pivot hat gegenüber der Raupe mit Wende zum selben Ziel eine Reparatur
+  *und* eine Lochvertauschung mehr; die beiden Minuszeichen heben sich auf (392 von 392 gemeinsamen
+  Übergängen mit gleichem Vorzeichen).
+- In dieser Eichung sind die Raupenschritte mit Wende alle positiv (392/392), die geraden Raupenschritte
+  alle negativ (192/192). Die Frustration kommt also aus den geraden Raupenschritten.
+- Varianten mit der Vertauschung *vor* den Sprüngen (auf dem künftigen Weg) haben dasselbe Vorzeichen wie
+  die Reparatur danach (7.4); sie ändern nur Gewichte, nicht diese Ergebnisse.
+
+Gemischt, M = Raupe + λ·(Pivot + Domino), oberster Zustand im Überlapp mit dem s- bzw. d-Wellen-Paar
+Σ_b f(b) Δ(b)|Néel⟩:
+
+| λ | 0 | 0,25 | 0,5 | 1 | 2 | 4 |
+|---|---|---|---|---|---|---|
+| λ_max(M) / λ_max(\|M\|) | 0,35 | 0,48 | 0,57 | 0,68 | 0,78 | 0,87 |
+| Überlapp d-Welle | 0,02 | 0,77 | 0,78 | 0,78 | 0,78 | 0,78 |
+| Überlapp s-Welle | 0 | 0 | 0 | 0 | 0 | 0 |
+
+### 7.4 Ein Loch: Schritt aus 2 Sprüngen und 1 Vertauschung
+
+Alle Prozesse aus zwei Lochsprüngen und genau einer Spin-Vertauschung, die wieder bei Néel enden:
+
+| Ziel | Prozesse | Vertauschung vorher (berührt künftigen Weg) | dazwischen | nachher (Reparatur) | Vorzeichen je Ziel |
+|---|---|---|---|---|---|
+| diagonal (±1, ±1) | 4 | 2 | 0 | 2 | einheitlich |
+| gerade (±2, 0), (0, ±2) | 2 | 1 | 0 | 1 | einheitlich |
+
+- Die Vertauschung *vor* den Sprüngen dreht ein richtiges Paar auf dem künftigen Weg um; das Loch schluckt
+  beide falschen Spins und hinterlässt keine Spur. Sie hat immer dasselbe Vorzeichen wie die Reparatur
+  danach (beide s = 1): Der Zeitpunkt spielt keine Rolle, die Beiträge addieren sich.
+- Es bleibt −1 pro Schritt: Dreieck (diagonal, diagonal, gerade zurück) −1, Raute aus vier Diagonalschritten
+  +1. Die Hüpfmatrix auf dem Untergitter hat λ_max(M) = 7,87 gegen λ_max(|M|) = 20,49; das Spektrum ist
+  gespiegelt, M ist bis auf Umeichen −|M|.
+- Bei gleichen Gewichten folgt daraus das Band E(k) ∝ (cos kₓ + cos k_y)² mit Minimum auf der ganzen Linie
+  |kₓ| + |k_y| = π (darauf (π/2, π/2) und (π, 0)), die bekannte Form der Einzelloch-Dispersion im
+  t-J-Modell. Das Loch ist kohärent, aber frustriert, und sein tiefster Zustand ist eine entartete Linie.
+
+### 7.5 Deutung
+
+| | Einzelloch | Paar |
+|---|---|---|
+| keine Spur; Reparatur vorher und nachher konstruktiv | ja | ja |
+| Vorzeichen geschlossener Wege | (−1)^Schritte → frustriert | +1 in der d-Wellen-Eichung → unfrustriert (Pivot, Domino) |
+| bosonisch untereinander | nein (Löcher tauschen mit −1) | ja (Paartausch +1) |
+
+Die Reparatur im Paarschritt gleicht das Vorzeichen des Lochaustauschs von selbst aus. Dadurch wird aus
+zwei fermionischen Löchern ein Objekt, dessen Bewegung keine Vorzeichen hat – in der d-Wellen-Basis. Das ist
+der qualitative Mechanismus, der hier für ODLRO im d-Wellen-Paarkanal spricht. Dagegen wirken die geraden
+Raupenschritte (reine Lochreparatur ohne J).
+
+Offen: ob der Tausch zweier Paare auch über Pivot- und Domino-Schritte +1 ergibt (für das Vielpaar-Argument
+nötig), und wie groß λ physikalisch ist (Energienenner der Zwischenzustände).
+
+## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
   Abschnitt 5 sind Argumente über die Struktur der Amplitude; quantitativ geprüft ist nur, was in
@@ -306,8 +431,11 @@ eigenem Bindungsoperator gerechnet (Marshall-gedrehtes S·S).
   Endlichkeitseffekte; die Bindungsenergien sind dort nur qualitativ aussagekräftig.
 - |H| entfernt *alle* Vorzeichen, auch die beim Austausch zweier Löcher, nicht nur die vom
   Reparatur-Zeitpunkt abhängigen. Der Vergleich zeigt die Wirkung der Vorzeichen insgesamt.
+- Abschnitt 7 nutzt effektive Modelle: fester Néel-Hintergrund, Paare nur aus Nachbarn, wenige
+  Schrittarten, alle Prozesse mit Gewicht 1, keine Energienenner. Die Vorzeichen sind exakt, die Gewichte
+  nicht.
 
-## 8. Stichworte zur Literatur
+## 9. Stichworte zur Literatur
 
 Aus dem Gedächtnis, vor dem Zitieren bitte prüfen:
 
@@ -317,5 +445,10 @@ Aus dem Gedächtnis, vor dem Zitieren bitte prüfen:
   (passt zu 4.4: Löcher sehen nur unreparierte Spins).
 - σ·t-J-Modell (Weng-Gruppe): t-J ohne Phase-String; dort wurde nach meiner Erinnerung eine stark
   geschwächte Paarbindung gefunden.
+- Vorzeichenstruktur des t-J-Modells (K. Wu, Z.-Y. Weng, J. Zaanen, 2008): Vorzeichen einer Weltlinie aus
+  Loch-Spin-Austauschen und Loch-Loch-Austauschen; die Regel in 7.1 ist dieselbe Struktur in einer anderen
+  Eichung.
+- Einzelloch-Dispersion ∝ (cos kₓ + cos k_y)² mit Minimum bei (π/2, π/2) (u. a. Kane, Lee, Read;
+  Martinez, Horsch; Dagotto-Übersichtsartikel).
 - Trugman-Schleifen (S. A. Trugman, 1988); String-Bild und Paarbildung über geteilte Strings
   (u. a. Grusdt, Bohrdt und Mitarbeiter).
