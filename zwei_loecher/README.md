@@ -19,7 +19,9 @@ Kurzfassung:
   (s = Zahl der Spin-Vertauschungen). Die reine Raupe ist dadurch frustriert (jede Wende ist ein
   Lochaustausch, −1). Paarschritte mit genau einer Reparatur (Pivot, Domino) sind dagegen ganz unfrustriert,
   und zwar im d-Wellen-Muster: Die Reparatur gleicht das Austausch-Vorzeichen aus. Ein einzelnes Loch wird
-  durch solche Schritte kohärent, bleibt aber frustriert (−1 pro Schritt).
+  durch solche Schritte kohärent, bleibt aber frustriert (−1 pro Schritt). Lockert man Néel und erlaubt
+  J-Fluktuationen (Vertauschungen, die keine Reparaturen sind), kommt auch für Paare Frustration zurück
+  (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -34,6 +36,7 @@ Kurzfassung:
 | `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
+| `fluktuationen.py` | Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 3 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
 
@@ -417,8 +420,45 @@ zwei fermionischen Löchern ein Objekt, dessen Bewegung keine Vorzeichen hat –
 der qualitative Mechanismus, der hier für ODLRO im d-Wellen-Paarkanal spricht. Dagegen wirken die geraden
 Raupenschritte (reine Lochreparatur ohne J).
 
+Das gilt im strengen Néel-Hintergrund. Lässt man J-Fluktuationen zu, wird auch die Paarbewegung
+frustriert (7.6).
+
 Offen: ob der Tausch zweier Paare auch über Pivot- und Domino-Schritte +1 ergibt (für das Vielpaar-Argument
 nötig), und wie groß λ physikalisch ist (Energienenner der Zwischenzustände).
+
+### 7.6 Gelockertes Néel: Vertauschungen, die keine Reparaturen sind (`fluktuationen.py`)
+
+Bisher war der Hintergrund zwischen zwei Paarschritten immer exakt Néel. Jetzt darf J auch ein richtiges
+Nachbarpaar umklappen (Fluktuation: zwei benachbarte falsche Spins), höchstens eine Fluktuation, höchstens
+zwei Plätze vom Paar entfernt. Alle Prozesse aus 1 bis 3 Elementarschritten zwischen solchen Zuständen werden
+vollständig aufgezählt (6×6-Fenster, 1456 Zustände, 72 192 Übergänge); keine Schrittart ist vorgegeben.
+
+| Zustandsraum, Prozesse | Verhältnis (Vertauschung : Sprung = 1 : 1) | Verhältnis (0,3 : 1) |
+|---|---|---|
+| sauberes Néel, alle Prozesse | 0,902 | 0,749 |
+| sauberes Néel, nur Prozesse mit Vertauschung | **1,000** | **1,000** |
+| mit Fluktuation, nur Prozesse mit Vertauschung | 0,923 | 0,881 |
+| mit Fluktuation, alle Prozesse | 0,917 | 0,867 |
+
+- Die vollständige Aufzählung bestätigt 7.3: Im sauberen Néel sind alle Prozesse mit Vertauschung
+  unfrustriert. Mit einer Fluktuation sind sie frustriert.
+- **Kleinste frustrierte Schleife** (das Paar bleibt stehen): J klappt ein Nachbarpaar neben dem Paar um;
+  das Paar dreht diese Fluktuation mit 2 Sprüngen und 1 Vertauschung um 90°; J klappt sie zurück.
+  3 Vertauschungen, kein Lochaustausch → −1.
+- **Phase-String-Form der Regel:** Bei einem geschlossenen Prozess ändert sich die Zahl der ↑-Spins auf
+  einem Untergitter nicht. Jede Vertauschung und jeder Sprung eines ↑-Spins ändert sie um 1, also ist
+  (−1)^s = (−1)^(n↑) und Vorzeichen = (−1)^(n↑) · sgn(π_Loch), n↑ = Zahl der Lochsprünge mit einem ↑-Spin
+  (129 von 129 geschlossenen Zufallsprozessen). Im sauberen Néel bewegen Pivot und Domino ↑- und ↓-Spins
+  so, dass n↑ und der Lochaustausch dieselbe Parität haben. Ordnet das Paar eine Fluktuation um, kann es auf
+  einer geschlossenen Weltlinie eine ungerade Zahl von ↑-Spins bewegen, ohne dass Löcher tauschen.
+- **Die Frustration ist lokal.** Eine Fluktuation, die die Wege der Löcher nicht berührt, ändert nichts:
+  Die Schleife zerfällt dann in eine reine Spinschleife (gerade Zahl von Vertauschungen, Marshall-Regel) und
+  eine saubere Paarschleife.
+- **Deutung (Hypothese):** Das Paar bleibt kohärent, solange Spinfluktuationen in seiner Nähe selten sind
+  oder als feste Singulett-Paare mitlaufen; viele bewegliche Fluktuationen um das Paar herum frustrieren
+  es. Das passt zum Bild der Phase-String-Theorie, nach dem Supraleitung kurzreichweitige, gepaarte
+  Spinkorrelationen braucht (aus dem Gedächtnis). Geprüft ist hier nur der Fall einer einzelnen Fluktuation.
+
 
 ## 8. Grenzen
 
@@ -431,9 +471,9 @@ nötig), und wie groß λ physikalisch ist (Energienenner der Zwischenzustände)
   Endlichkeitseffekte; die Bindungsenergien sind dort nur qualitativ aussagekräftig.
 - |H| entfernt *alle* Vorzeichen, auch die beim Austausch zweier Löcher, nicht nur die vom
   Reparatur-Zeitpunkt abhängigen. Der Vergleich zeigt die Wirkung der Vorzeichen insgesamt.
-- Abschnitt 7 nutzt effektive Modelle: fester Néel-Hintergrund, Paare nur aus Nachbarn, wenige
-  Schrittarten, alle Prozesse mit Gewicht 1, keine Energienenner. Die Vorzeichen sind exakt, die Gewichte
-  nicht.
+- Abschnitt 7 nutzt effektive Modelle: fester Néel-Hintergrund (in 7.6 mit höchstens einer Fluktuation),
+  Paare nur aus Nachbarn, Prozesse bis 3 Elementarschritte, alle Prozesse mit einfachen Gewichten, keine
+  Energienenner. Die Vorzeichen sind exakt, die Gewichte nicht.
 
 ## 9. Stichworte zur Literatur
 
