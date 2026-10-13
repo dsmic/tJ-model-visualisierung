@@ -9,10 +9,11 @@ Prozesses in exp(-tau H) ist t^m (J/2)^s * (positive Faktoren) * Repo-Vorzeichen
 
 Fermion-Ordnung wie NetKet / tj_gui.py: Orbital = spin_idx * N + site, down = 0, up = 1, site = x * L + y.
 
-Start:  python ed_tj.py                      (4x4 periodisch, J/t = 0.2 0.4 0.6 1.0; einige Minuten)
+Start:  python ed_tj.py                      (4x4 periodisch, J/t = 0.2 0.4 0.6 1.0; etwa 20 Minuten)
         python ed_tj.py --L 3 --offen --J 0.4
         python ed_tj.py --pruefen            (Matrixelemente gegen tj_gui.swap_sign, braucht tkinter)
         python ed_tj.py --netket             (Matrixelemente und Energien gegen NetKet, kleines Gitter)
+        python ed_tj.py --reihenfolge --J 0.4  (Entropie fuer verschiedene Platzreihenfolgen)
 Braucht numpy (>= 2.0) und scipy.
 """
 import argparse
@@ -181,20 +182,31 @@ class Sector:
             h ^= low
         return out
 
-    def site_major_sign(self):
-        """Vorzeichen fuer den Wechsel zur platzweisen Ordnung (Orbitale nach Platz sortiert):
-        (-1)^#{(up auf i, dn auf j), i < j}."""
+    def site_major_sign(self, order=None):
+        """Vorzeichen fuer den Wechsel von der NetKet-Ordnung zur platzweisen Ordnung (Orbitale nach Platz
+        sortiert, Plaetze in der Reihenfolge order; Standard: site = x * L + y).
+        Zaehlt die Paare besetzter Orbitale, deren Reihenfolge sich dabei umkehrt."""
+        order = list(range(self.N)) if order is None else list(order)
+        pos = np.empty(self.N, dtype=np.int64)
+        pos[order] = np.arange(self.N)
+        up = [self._bit(self.up, s) for s in range(self.N)]
+        dn = [self._bit(self.dn, s) for s in range(self.N)]
         cnt = np.zeros(self.dim, dtype=np.int64)
-        for j in range(self.N):
-            cnt += self._bit(self.dn, j) * popcount(self.up & ((1 << j) - 1))
+        for i in range(self.N):
+            for j in range(self.N):
+                if i < j and pos[i] > pos[j]:      # gleiche Spinsorte, i vor j in NetKet
+                    cnt += up[i] * up[j] + dn[i] * dn[j]
+                if pos[i] < pos[j]:                # dn(j) vor up(i) in NetKet
+                    cnt += up[i] * dn[j]
         return 1 - 2 * (cnt % 2)
 
-    def squeezed(self):
+    def squeezed(self, order=None):
         """(Index der Lochkonfiguration, Index der Spinfolge) je Zustand. Spinfolge = Spins der besetzten
-        Plaetze in Platzreihenfolge (Ogata-Shiba-'squeezed space')."""
+        Plaetze in der Reihenfolge order (Ogata-Shiba-'squeezed space')."""
+        order = range(self.N) if order is None else order
         pos = np.zeros(self.dim, dtype=np.int64)
         seq = np.zeros(self.dim, dtype=np.int64)
-        for s in range(self.N):
+        for s in order:
             occ = self._bit(self.up | self.dn, s)
             seq |= (self._bit(self.up, s) * occ) << pos
             pos += occ
@@ -320,12 +332,13 @@ def bond_correlations(res, free=False):
     return {key: (sums[0, i] / sums[2, i], sums[1, i] / sums[2, i], sums[2, i]) for i, key in enumerate(cl.keys)}
 
 
-def charge_spin_entropy(res, free):
+def charge_spin_entropy(res, free, order=None):
     """Verschraenkungsentropie zwischen Lochpositionen und Spinfolge (squeezed space), je Grundzustand.
-    tJ: Wellenfunktion in platzweiser Fermion-Ordnung; frei: |psi| (Grundzustand des bosonischen |H|)."""
+    tJ: Wellenfunktion in platzweiser Fermion-Ordnung; frei: |psi| (Grundzustand des bosonischen |H|).
+    order: Reihenfolge der Plaetze (Standard zeilenweise)."""
     sec = res.sec
-    xi, si = sec.squeezed()
-    g = sec.site_major_sign()
+    xi, si = sec.squeezed(order)
+    g = sec.site_major_sign(order)
     out = []
     for v in res.vecs.T:
         amp = np.abs(v) if free else g * v
@@ -398,6 +411,18 @@ def run(args):
         with open(args.out, "w") as f:
             f.write(text)
     print(text)
+
+
+def order_check(L, pbc, J):
+    """Verschraenkungsentropie Loecher <-> Spins (2 Loecher) fuer verschiedene Platzreihenfolgen."""
+    orders = {"zeilenweise": list(range(L * L)),
+              "spaltenweise": [y * L + x for x in range(L) for y in range(L)],
+              "Schlangenlinie": [x * L + (y if x % 2 == 0 else L - 1 - y) for x in range(L) for y in range(L)]}
+    for free in (False, True):
+        r = solve(L, pbc, 2, 1.0, J, free, False)
+        for name, order in orders.items():
+            S = charge_spin_entropy(r, free, order)
+            print(f"J/t = {J}, {'frei' if free else 'tJ'}, {name}: {', '.join(f'{s:.4f}' for s in S)}")
 
 
 def check_tj_gui(n=400, seed=1):
@@ -500,7 +525,12 @@ if __name__ == "__main__":
     ap.add_argument("--out", help="Ergebnisse zusaetzlich als Markdown-Datei schreiben")
     ap.add_argument("--pruefen", action="store_true", help="Matrixelemente gegen tj_gui.swap_sign pruefen")
     ap.add_argument("--netket", action="store_true", help="Matrixelemente und Energien gegen NetKet pruefen")
+    ap.add_argument("--reihenfolge", action="store_true",
+                    help="Entropie Loecher <-> Spins fuer verschiedene Platzreihenfolgen (erstes J)")
     a = ap.parse_args()
+    if a.reihenfolge:
+        order_check(a.L, not a.offen, a.J[0])
+        sys.exit(0)
     if a.pruefen or a.netket:
         good = True
         if a.pruefen:
