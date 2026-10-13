@@ -41,6 +41,11 @@ Kurzfassung:
   Überschuss mit festem, überall gleichem Vorzeichen. Die Auslöschung macht das Paar schwerer, aber nicht
   inkohärent über große Entfernungen. Für die Raupe sind alle Varianten konstruktiv, für ein einzelnes Loch
   nicht: Das begünstigt Paare, und Paare sind Bosonen.
+- **Getrennte Partner (7.12):** Im Néel ist ein Loch eine ↑-Lücke, das andere eine ↓-Lücke. Bei sofort
+  reparierten J-Schritten vertauscht jede nur Elektronen ihrer Sorte; das Vorzeichen zweier unabhängig laufender
+  Löcher ist daher das Produkt ihrer Einzelvorzeichen (1563 von 1563), deckungsgleiche Wege geben immer +1. Die
+  Amplitude für Trennen und Wiedertreffen ist G(R)² ≥ 0: Die Löcher müssen nicht zusammenbleiben (Cooper-Paarung
+  im Ortsraum).
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -57,6 +62,7 @@ Kurzfassung:
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
 | `fluktuationen2.py` | wie `fluktuationen.py`, aber bis zu zwei Fluktuationen, mit Gegenprobe (Abschnitt 7.8, etwa 6 min auf 4 Kernen; numpy, scipy) | `python fluktuationen2.py` |
 | `beweglichkeit.py` | J-Wende über intakte und gebrochene Bindungen; Bandstruktur des Paares auf dem 12×12-Torus (Bloch-Blöcke mit Verschiebungsvorzeichen), sauber und mit bis zu zwei Fluktuationen (Abschnitt 7.9, etwa 4 min auf 4 Kernen; numpy, scipy; `--pruefen` vergleicht auf kleinen Tori mit der vollen Prozessmatrix) | `python beweglichkeit.py` |
+| `partner.py` | zwei getrennt laufende Löcher (↑- und ↓-Lücke): Vorzeichen = Produkt der Einzelvorzeichen (Abschnitt 7.12, wenige Sekunden) | `python partner.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
@@ -765,7 +771,8 @@ und dem Reparatur-Bild folgt.
 ### 7.11 Idee: Die Swaps summieren über Hintergründe, nur der konstruktive Überschuss bleibt
 
 Vorschlag aus der Diskussion. Er ersetzt die Folgerung „Abfall bei aufgeweichtem Néel“ aus 7.9 und macht 7.10
-zum Grenzfall.
+zum Grenzfall. Schwachpunkt: Punkt 5 setzt ein fest gebundenes Paar als Quasiteilchen voraus. 7.12 kommt ohne
+das aus.
 
 1. **Swaps machen Wege, keine Vorzeichen.** In der Form (−1)^(n↑) · sgn(π_Loch) tragen Vertauschungen kein
    Vorzeichen. Sie erzeugen Alternativen: Sie ändern, welcher Spin dort sitzt, wo ein Loch vorbeikommt, und damit
@@ -799,6 +806,44 @@ zum Grenzfall.
 
 **Offen:** ob die Spinwolke des Paares endlich bleibt (beim einzelnen Loch ist das als Spin-Polaron bekannt, aus
 dem Gedächtnis); die Wechselwirkung zwischen Paaren; der Vielteilchenschritt zur Kondensation.
+
+### 7.12 Idee: Getrennte Partner, das Vorzeichen als Produkt (`partner.py`)
+
+Einwand gegen 7.11: Zwei Löcher bleiben nicht wirklich zusammen. Der Mechanismus muss erlauben, dass sich Paare
+trennen und in Phase wieder verbinden.
+
+1. **Die beiden Löcher eines Paares sind verschiedene Sorten.** Im Néel sitzt ein Loch auf A (dort fehlt ein ↑),
+   das andere auf B (dort fehlt ein ↓). Ein J-Schritt (zwei Sprünge, sofort repariert) tauscht die ↑-Lücke mit
+   genau einem ↑-Elektron. Das ↓-Elektron, das sie unterwegs verschoben hat, bringt die Reparatur an seinen Platz
+   zurück. Eine ↑-Lücke vertauscht also nur ↑-Elektronen, eine ↓-Lücke nur ↓-Elektronen.
+2. **Darum zerfällt das Vorzeichen in ein Produkt.** Das Vorzeichen eines geschlossenen Prozesses ist
+   sgn(π↑) · sgn(π↓) (Herleitung in 7.1). Jeder Faktor gehört zu einer Lücke und hängt nur von deren eigenem Weg
+   ab, nicht davon, wo die andere ist und wann sie läuft. Geprüft an 1563 geschlossenen Zufallsprozessen (beide
+   Lücken laufen zufällige Schleifen aus 3–6 J-Schritten, Schritte zufällig verschränkt, Anfangsabstand 1 bis 5,
+   Wege dürfen sich kreuzen): immer Vorzeichen = s(Weg der ↑-Lücke) · s(Weg der ↓-Lücke). Die Einzelschleifen
+   sind frustriert (764-mal +1, 799-mal −1).
+3. **Gleiche Wege heben sich auf.** Die ↓-Lücke hat dieselbe Vorzeichenfunktion wie die ↑-Lücke (Symmetrie:
+   alle Spins umklappen und um einen Platz verschieben). Laufen beide Lücken deckungsgleiche Wege, ist das
+   Produkt +1, wie weit sie auch voneinander entfernt sind und in welcher Reihenfolge sie laufen (729 von 729).
+4. **Auftrennen und in Phase verbinden.** Ein Paar trennt sich, beide Löcher laufen unabhängig, und sie treffen
+   sich um R verschoben wieder. Die Amplitude dafür ist das Produkt der Einlochamplituden,
+   G_↑(R) · G_↓(R) = G(R)², bis auf einen Faktor, der nur von Anfangs- und Endbindung abhängt (die Form des
+   Paares). Ein Quadrat ist nie negativ, so stark G(R) selbst durch die Frustration im Vorzeichen schwankt.
+   Gemischte Beiträge (einer +, einer −) gibt es, sie können das Quadrat aber nicht umdrehen; übrig bleibt der
+   konstruktive Teil. Die Löcher müssen dafür nicht zusammenbleiben.
+5. **Das ist Cooper-Paarung im Ortsraum.** Gepaart werden Partner mit derselben Dynamik (↑- und ↓-Lücke sind
+   Zeitumkehr-Partner); ihre Phasen heben sich auf, wie im Anderson-Theorem. Tauschen zwei Paare ihre Partner, gibt
+   das das fermionische −1 (7.2: zwei einzelne Löcher tauschen mit −1). Das ist die Determinanten-Struktur eines
+   BCS-Zustands und verträgt sich mit ODLRO. Kommt eine Anziehung zwischen ↑- und ↓-Lücke hinzu (6.1: mit
+   Vorzeichen gebunden, ohne nicht), folgt nach Cooper die Paarbildung. Weil der Paarkanal nie destruktiv ist,
+   reicht jede Anziehung. Das ist das Standardargument und hier nicht gerechnet.
+6. **Wo der Reparatur-Zeitpunkt eingreift.** Das Produkt ist für sofort reparierte Schritte geprüft. Wird eine
+   Reparatur aufgeschoben, bis die andere Lücke die Spur kreuzt, ändert sich das Vorzeichen (4.1). Dann bewegt
+   eine Lücke Elektronen der anderen Sorte, und die Faktoren sind nicht mehr unabhängig. An dieser Stelle
+   verschränkt der Reparatur-Zeitpunkt die beiden Löcher (Abschnitt 5).
+7. **Was Paare bricht.** Alles, was den beiden Partnern verschiedene Vorzeichen gibt, z. B. eine eingefrorene
+   Fluktuation, die nur den Weg des einen Partners berührt. Das wäre das Gegenstück zu magnetischen Störstellen
+   bei Abrikosov–Gor'kov. Nicht geprüft.
 
 ## 8. Grenzen
 
@@ -859,6 +904,9 @@ heißt: begründet, aber nicht gerechnet.
    Vorzeichen nicht (+0,19 t) (6.1).
 10. Das Paar mit Spinwolke (bis zu zwei Fluktuationen) hat auf dem Torus ein gekrümmtes Band mit eindeutigem
     Maximum bei K = 0 (7.9).
+11. Zwei getrennt laufende Löcher (↑-Lücke und ↓-Lücke, sofort reparierte J-Schritte): Das Vorzeichen ist das
+    Produkt der Einzelvorzeichen, bei deckungsgleichen Wegen immer +1, auch bei großem Abstand und gekreuzten
+    Wegen (7.12).
 
 **Korrigiert**
 
@@ -870,23 +918,29 @@ heißt: begründet, aber nicht gerechnet.
   mit Fluktuationen, aber ohne J-Wenden, hat 0,92 und ist trotzdem fast unbeweglich.
 - 7.9: Der dort vorhergesagte Abfall mit der Entfernung gilt nur für eingefrorene Fluktuationen (7.11).
 
-**Idee für ODLRO (Argument, 7.11)**
+**Idee für ODLRO (Argument, 7.12)**
 
-Vertauschungen tragen kein Vorzeichen, sie erzeugen alternative Wege. Im Quanten-Grundzustand wird für jeden
+Ein Paar muss nicht zusammenbleiben. Seine beiden Löcher sind verschiedene Sorten (↑-Lücke, ↓-Lücke). Jede
+vertauscht nur Elektronen ihrer Sorte, und das Vorzeichen ist das Produkt zweier Faktoren, je einer pro Loch.
+Trennen sich die Löcher und treffen sich wieder, ist die Amplitude G(R)² und damit nie negativ: Die Phasen der
+Partner heben sich auf, wie bei Cooper-Paaren aus Zeitumkehr-Partnern. Partnertausch gibt das fermionische −1
+eines BCS-Zustands. Mit einer Anziehung (6.1) folgt Cooper-Paarung und daraus ODLRO; dieser letzte Schritt ist das
+Standardargument. Der Reparatur-Zeitpunkt greift genau dort ein, wo eine Lücke die noch unreparierte Spur der
+anderen kreuzt: Dann sind die Faktoren nicht mehr unabhängig (4.1, 7.12).
+
+Vorstufe (7.11): Vertauschungen tragen kein Vorzeichen, sie erzeugen alternative Wege. Im Quanten-Grundzustand wird für jeden
 Paarschritt über alle Varianten summiert. Übrig bleibt der konstruktive Überschuss, mit festem und überall
 gleichem Vorzeichen: bei der Raupe 1, bei einer J-Wende −(4/3)⟨S·S⟩ der bewegten Bindung, also etwa 0,4 bis
-0,5. Die Auslöschung macht das Paar schwerer, aber nicht inkohärent über große Entfernungen. Damit ist das Paar
-ein Quasiteilchen mit Band. Weil Paare bosonisch sind, kondensiert ein dünnes Gas von ihnen; das ergibt ODLRO,
-mit d-Welle aus der Eichung. Ein einzelnes Loch verliert durch destruktive Varianten mehr als ein Paar: ein
-kinetischer Grund für die Paarbildung. Ein Singulett-Hintergrund (7.10) ist der Grenzfall mit größtem
-Überschuss, aber keine Bedingung.
+0,5. Der Schritt von dort zu einem fest gebundenen Paar als Quasiteilchen ist schwach; 7.12 braucht ihn nicht. Ein
+Singulett-Hintergrund (7.10) ist der Grenzfall mit größtem Überschuss.
 
 **Offen**
 
-- ob die Spinwolke des Paares endlich bleibt (Quasiteilchengewicht größer null);
-- Wechselwirkung zwischen Paaren und der Vielteilchenschritt zur Kondensation;
+- ob das Produkt auch mit Fluktuationen im Hintergrund gilt und welche Fluktuationen Paare brechen (7.12, Punkt 7);
+- wie stark die Anziehung zwischen ↑- und ↓-Lücke ist und welche Paarsymmetrie daraus folgt;
+- der Vielteilchenschritt (Cooper-Paarung bzw. Kondensation);
 - ob sich destruktive Wege sogar paarweise exakt aufheben (stärkere Form der Idee);
 - echte Energien statt einfacher Gewichte, größere Systeme.
 
 **Werkzeuge:** `tj_gui_web.html` (Web-GUI; zwei Bewegungen vergleichen und für Claude speichern),
-`kohaerenz.py`, `fluktuationen.py`, `fluktuationen2.py`, `beweglichkeit.py`, `ed_tj.py` (siehe Inhalt).
+`kohaerenz.py`, `fluktuationen.py`, `fluktuationen2.py`, `beweglichkeit.py`, `partner.py`, `ed_tj.py` (siehe Inhalt).
