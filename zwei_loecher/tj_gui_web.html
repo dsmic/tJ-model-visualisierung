@@ -877,8 +877,9 @@ function analyse(name, start, steps) {
   const hs = [], he = [];
   for (let i = 0; i < N; i++) { if (start[i] === HOLE) hs.push(i); if (c[i] === HOLE) he.push(i); }
   const perm = hs.map(h => he.indexOf(ident.indexOf(h)));
+  const sameHoles = hs.length === he.length && hs.every((h, i) => h === he[i]);
   return { name, start: start.slice(), steps: steps.map(x => x.slice()), end: c, sign, m, s, nUp,
-           permSign: permSign(perm), neelEnd: neelViolations(c).size === 0, text };
+           permSign: permSign(perm), sameHoles, neelEnd: neelViolations(c).size === 0, text };
 }
 function currentMovement(name) {
   const start = S.history.length ? S.history[0].conf : S.conf;
@@ -889,7 +890,8 @@ const counts = mv => `${plural(mv.steps.length, "Schritt", "Schritte")} (${plura
 const sameConf = (x, y) => x.length === y.length && x.every((v, i) => v === y[i]);
 function describeMv(tag, mv) {
   return `${tag} „${mv.name || "ohne Namen"}“: ${counts(mv)}, ` +
-    `n↑ = ${mv.nUp}, Löcher vertauscht: ${mv.permSign < 0 ? "ja" : "nein"}, Ende Néel: ${mv.neelEnd ? "ja" : "nein"}, ` +
+    `n↑ = ${mv.nUp}, ` + (mv.sameHoles ? `Löcher vertauscht: ${mv.permSign < 0 ? "ja" : "nein"}, ` : "") +
+    `Ende Néel: ${mv.neelEnd ? "ja" : "nein"}, ` +
     `Vorzeichen ${fmt(mv.sign)}`;
 }
 function compareText(A, B) {
@@ -902,6 +904,7 @@ function compareText(A, B) {
   if (ss && se) {
     const rel = A.sign * B.sign, ps = A.permSign * B.permSign;
     const ruleS = (-1) ** (A.s + B.s) * ps, ruleUp = (-1) ** (A.nUp + B.nUp) * ps;
+    lines.push(`Löcher in A und B ${ps > 0 ? "gleich zugeordnet" : "vertauscht zugeordnet"} (sgn(π_A)·sgn(π_B) = ${fmt(ps)})`);
     lines.push(`Relatives Vorzeichen A·B = ${fmt(rel)}: ${rel > 0 ? "gleich" : "ENTGEGENGESETZT"} (konventionsfrei, weil Start und Ende gleich sind)`);
     lines.push(`Regel: (−1)^(s_A+s_B) · sgn(π_A)·sgn(π_B) = (−1)^${A.s + B.s} · ${fmt(ps)} = ${fmt(ruleS)} ${ruleS === rel ? "✓" : "✗"}`);
     lines.push(`Phase-String-Form: (−1)^(n↑_A+n↑_B) · sgn(π_A)·sgn(π_B) = (−1)^${A.nUp + B.nUp} · ${fmt(ps)} = ${fmt(ruleUp)} ${ruleUp === rel ? "✓" : "✗"}`);
@@ -950,7 +953,7 @@ function pack(mv) {
   if (!mv) return null;
   return { name: mv.name, start: toRows(mv.start), ende: toRows(mv.end), schritte: mv.steps, beschreibung: mv.text,
            vorzeichen: mv.sign, spruenge: mv.m, vertauschungen: mv.s, n_up: mv.nUp,
-           loecher_vertauscht: mv.permSign < 0, ende_neel: mv.neelEnd };
+           loecher_vertauscht: mv.sameHoles ? mv.permSign < 0 : null, ende_neel: mv.neelEnd };
 }
 const unpack = p => (p ? analyse(p.name || "", fromRows(p.start), p.schritte || []) : null);
 
