@@ -26,6 +26,7 @@ Kurzfassung:
 |---|---|---|
 | `zwei_loch.py` | Kernfunktionen: Wege, Sprung-Reihenfolgen, Reparatur-Strategien, Suche (baut auf `../tj_gui.py` auf) | – |
 | `tj_gui_2loch.py` | GUI: alles aus `tj_gui.py` plus zwei Leisten für zwei Löcher | `python tj_gui_2loch.py` |
+| `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |

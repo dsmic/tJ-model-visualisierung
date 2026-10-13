@@ -1,0 +1,850 @@
+<title>t-J Vorzeichenbrett</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: links das quadratische 8x8-Brett mit Statuszeile und Brett-Werkzeugen,
+   rechts das Bedienfeld (ein Loch, zwei Löcher, Ausgabe, Bilder); schmal untereinander. */
+:root {
+  --bg: #f3f5f2;
+  --panel: #ffffff;
+  --fg: #1d2421;
+  --muted: #5d6863;
+  --line: #d3dad5;
+  --accent: #2f6d55;
+  --accent-fg: #ffffff;
+  --btn: #e7ece8;
+  --btn-hover: #dbe3dd;
+  --plus: #c8f0c8;
+  --minus: #dcc8f0;
+  --up: #d62728;
+  --dn: #1f5fd6;
+  --up-light: #f2a0a0;
+  --dn-light: #9fbcf2;
+  --bond: #9a9f9c;
+  --bond-hot: #222724;
+  --trail: #8e8e8e;
+  --wrong: #ff8c00;
+  --hole: #333a37;
+  --label: #111614;
+  --font-ui: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141917; --panel: #1c2320; --fg: #e3e9e5; --muted: #9aa6a0; --line: #33403a;
+    --accent: #6fbf9a; --accent-fg: #0f1512; --btn: #26302b; --btn-hover: #2f3b35;
+    --plus: #23452b; --minus: #3a2c52; --up: #ef5350; --dn: #4f8ef7;
+    --up-light: #6e3434; --dn-light: #2f4673; --bond: #5f6b65; --bond-hot: #e3e9e5;
+    --trail: #a7a7a7; --wrong: #ff9d2e; --hole: #c9d2cd; --label: #f4f7f5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141917; --panel: #1c2320; --fg: #e3e9e5; --muted: #9aa6a0; --line: #33403a;
+  --accent: #6fbf9a; --accent-fg: #0f1512; --btn: #26302b; --btn-hover: #2f3b35;
+  --plus: #23452b; --minus: #3a2c52; --up: #ef5350; --dn: #4f8ef7;
+  --up-light: #6e3434; --dn-light: #2f4673; --bond: #5f6b65; --bond-hot: #e3e9e5;
+  --trail: #a7a7a7; --wrong: #ff9d2e; --hole: #c9d2cd; --label: #f4f7f5;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-ui); font-size: 15px; line-height: 1.45; }
+.app {
+  padding-inline: 16px; padding-block: 16px 32px;
+  max-width: 1400px; margin: 0 auto;
+  display: grid; gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr); align-items: start; }
+  header { grid-column: 1 / -1; }
+}
+header { display: grid; gap: 6px; }
+h1 { font-size: 1.5rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 70ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.dot.up { background: var(--up); } .dot.dn { background: var(--dn); }
+.dot.hole { border: 2px solid var(--hole); width: 8px; height: 8px; }
+.sq { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
+.sq.plus { background: var(--plus); } .sq.minus { background: var(--minus); }
+
+.board-col { display: grid; gap: 10px; min-width: 0; }
+.board-wrap { width: min(100%, max(300px, calc(100vh - 280px))); justify-self: center; aspect-ratio: 1; max-width: 100%; }
+#board { width: 100%; height: 100%; display: block; border-radius: 6px; touch-action: manipulation; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.status {
+  font-family: var(--font-data); font-size: 0.9rem; font-variant-numeric: tabular-nums;
+  display: flex; flex-wrap: wrap; gap: 4px 18px; justify-content: center; color: var(--muted);
+}
+.status b { color: var(--fg); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.board-col .row { justify-content: center; }
+
+button {
+  font: inherit; font-size: 0.92rem; color: var(--fg); background: var(--btn);
+  border: 1px solid var(--line); border-radius: 7px; padding: 8px 12px; min-height: 40px; cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--btn-hover); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button:disabled { opacity: 0.45; cursor: default; }
+label.check { display: inline-flex; align-items: center; gap: 6px; font-size: 0.92rem; min-height: 40px; }
+label.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.panel { display: grid; gap: 14px; min-width: 0; }
+fieldset {
+  margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+  padding-inline: 14px; padding-block: 10px 14px; display: grid; gap: 10px; min-width: 0;
+}
+legend { font-weight: 600; padding-inline: 6px; font-size: 0.95rem; }
+.hint { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px 12px; }
+.fields label { display: grid; gap: 3px; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.02em; }
+input[type="text"]::placeholder { text-transform: none; color: var(--muted); }
+input[type="text"] {
+  font-family: var(--font-data); font-size: 1rem; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; min-height: 40px; width: 100%; box-sizing: border-box;
+  text-transform: uppercase;
+}
+#out {
+  margin: 0; font-family: var(--font-data); font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+  min-height: 5.5em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
+}
+#out.busy { color: var(--muted); }
+.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.thumbs svg { width: 100%; aspect-ratio: 1; display: block; border-radius: 4px; border: 1px solid var(--line); cursor: pointer; }
+.thumbs .empty { aspect-ratio: 1; border: 1px dashed var(--line); border-radius: 4px; }
+
+svg .bg-plus { fill: var(--plus); } svg .bg-minus { fill: var(--minus); }
+svg .bond { stroke: var(--bond); stroke-width: 1.5; }
+svg .bond.hot { stroke: var(--bond-hot); stroke-width: 6; }
+svg .neel-up { fill: var(--up-light); } svg .neel-dn { fill: var(--dn-light); }
+svg .trail { stroke: var(--trail); stroke-width: 7; stroke-linecap: round; }
+svg .wrong { fill: none; stroke: var(--wrong); stroke-width: 5; }
+svg .up { fill: var(--up); } svg .dn { fill: var(--dn); }
+svg .hole { stroke: var(--hole); stroke-width: 2.5; }
+svg .hole.on-plus { fill: var(--plus); } svg .hole.on-minus { fill: var(--minus); }
+svg .lab { fill: var(--label); font-family: var(--font-ui); font-weight: 600; font-size: 24px; }
+@media (prefers-reduced-motion: no-preference) { button { transition: background 0.12s; } }
+</style>
+
+<main class="app">
+  <header>
+    <h1>t-J Vorzeichenbrett</h1>
+    <p class="lede">8×8-Gitter ohne Doppelbesetzung, offene Ränder, Fermion-Vorzeichen in NetKet-Ordnung. Tippe auf eine
+      Bindung zwischen zwei Nachbarplätzen, um ihren Inhalt zu vertauschen. Web-Version von <code>tj_gui.py</code> und
+      <code>tj_gui_2loch.py</code>.</p>
+    <div class="legend" aria-hidden="true">
+      <span><i class="dot up"></i>up</span><span><i class="dot dn"></i>down</span><span><i class="dot hole"></i>Loch</span>
+      <span><i class="sq plus"></i>Vorzeichen +1</span><span><i class="sq minus"></i>Vorzeichen −1</span>
+    </div>
+  </header>
+
+  <section class="board-col" aria-label="Brett">
+    <div class="board-wrap"><svg id="board" viewBox="0 0 570 570" role="img" aria-label="8x8-Brett"></svg></div>
+    <div class="status" id="status"></div>
+    <div class="row">
+      <button id="b-new">Neu (zufällig)</button>
+      <button id="b-undo">Zurück</button>
+      <button id="b-redo" class="primary">Vor</button>
+      <button id="b-play">Abspielen</button>
+      <button id="b-undoall">Alles zurück</button>
+    </div>
+    <div class="row">
+      <button id="b-check">Check Néel</button>
+      <button id="b-cleartrail">Lochspur löschen</button>
+      <label class="check"><input type="checkbox" id="c-neel"> Néel im Hintergrund</label>
+    </div>
+  </section>
+
+  <section class="panel" aria-label="Tests">
+    <fieldset>
+      <legend>Zwei Löcher</legend>
+      <div class="fields">
+        <label for="in-a">Weg A<input type="text" id="in-a" value="RR" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+        <label for="in-b">Weg B<input type="text" id="in-b" value="DD" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+        <label for="in-off">B-Start<input type="text" id="in-off" value="-1,1" autocomplete="off" spellcheck="false"></label>
+        <label for="in-order">Reihenfolge<input type="text" id="in-order" value="" placeholder="erst A, dann B" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+      </div>
+      <div class="row">
+        <button id="b-two-test">Strategien vergleichen</button>
+        <button id="b-variant">Variante laden</button>
+        <button id="b-two-search">Suche +1/−1</button>
+        <button id="b-cross">Beispiel Kreuzung</button>
+      </div>
+      <p class="hint">B-Start relativ zu A als Zeile,Spalte (−1,1 = eine Zeile höher, eine Spalte rechts). Reihenfolge als Folge aus A und B, z.B. ABAB; leer = erst A, dann B; „alle“ nur für die Suche. Strategien: Reparatur am Ende, nach A (bevor B weiterläuft), sofort (vor jedem Sprung), jeweils mit denselben Sprüngen im selben Start.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ein Loch</legend>
+      <div class="fields">
+        <label for="in-path">Weg ab zufälligem Loch<input type="text" id="in-path" value="RRULLD" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+      </div>
+      <div class="row">
+        <button id="b-t-end">Reparatur am Ende</button>
+        <button id="b-t-mid">zwischendurch</button>
+        <button id="b-t-now">sofort</button>
+        <button id="b-search">Suche +1/−1</button>
+      </div>
+      <div class="row">
+        <button id="b-dev">Abweichung laden</button>
+        <button id="b-rand">Zufallsbeispiel</button>
+      </div>
+    </fieldset>
+
+    <div class="row">
+      <button id="b-ex-plus">Beispiel +1</button>
+      <button id="b-ex-minus">Beispiel −1</button>
+      <span class="hint">laden Treffer der letzten Suche</span>
+    </div>
+
+    <pre id="out" aria-live="polite"></pre>
+
+    <fieldset>
+      <legend>Gesicherte Bilder</legend>
+      <div class="row">
+        <button id="b-save">Sichern</button>
+        <button id="b-clearsaved">Bilder löschen</button>
+        <span class="hint">Tippen auf ein Bild macht es zur Startkonfiguration.</span>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </fieldset>
+  </section>
+</main>
+
+<script>
+"use strict";
+// ---------- Modell (Port von tj_gui.py und zwei_loch.py) ----------
+const L = 8, N = L * L, UP = 1, DN = -1, HOLE = 0;
+const CELL = 70, MARGIN = 40, BOARD_PX = 2 * MARGIN + (L - 1) * CELL;
+const site = (x, y) => x * L + y;
+const orbital = (s, spin) => (spin === UP ? 1 : 0) * N + s;
+const sublattice = s => (Math.floor(s / L) + s % L) % 2;
+const neelSpin = s => (sublattice(s) === 0 ? UP : DN);
+const choice = arr => arr[Math.floor(Math.random() * arr.length)];
+const DELTA = { R: [0, 1], L: [0, -1], U: [-1, 0], D: [1, 0] };
+
+function sample(arr, n) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a.slice(0, n);
+}
+function toOcc(conf) {
+  const occ = new Uint8Array(2 * N);
+  for (let s = 0; s < N; s++) if (conf[s] !== HOLE) occ[orbital(s, conf[s])] = 1;
+  return occ;
+}
+function applyC(occ, k, create) {
+  if (occ[k] === (create ? 1 : 0)) return 0;
+  let c = 0;
+  for (let i = 0; i < k; i++) c += occ[i];
+  occ[k] = create ? 1 : 0;
+  return c % 2 ? -1 : 1;
+}
+// Vorzeichen der Vertauschung der Inhalte von a und b (NetKet-Konvention), wie tj_gui.swap_sign
+function swapSign(conf, a, b) {
+  const va = conf[a], vb = conf[b];
+  if (va === vb) return 1;
+  const occ = toOcc(conf);
+  let ops;
+  if (va === HOLE || vb === HOLE) {
+    const [src, dst] = vb === HOLE ? [a, b] : [b, a];
+    const spin = conf[src];
+    ops = [[orbital(src, spin), false], [orbital(dst, spin), true]];
+  } else {
+    ops = [[orbital(b, vb), false], [orbital(a, vb), true], [orbital(a, va), false], [orbital(b, va), true]];
+  }
+  let sign = 1;
+  for (const [k, cr] of ops) sign *= applyC(occ, k, cr);
+  return sign;
+}
+function neelRandomStart() {
+  const conf = Array.from({ length: N }, (_, s) => neelSpin(s));
+  for (const spin of [UP, DN]) {
+    const sites = [];
+    for (let s = 0; s < N; s++) if (conf[s] === spin) sites.push(s);
+    for (const s of sample(sites, L / 2)) conf[s] = HOLE;
+  }
+  return conf;
+}
+function neighbours(s) {
+  const x = Math.floor(s / L), y = s % L, out = [];
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const nx = x + dx, ny = y + dy;
+    if (nx >= 0 && nx < L && ny >= 0 && ny < L) out.push(site(nx, ny));
+  }
+  return out;
+}
+function walkSteps(conf, h, moves) {
+  const c = conf.slice(), steps = [];
+  let pos = h;
+  for (const m of moves) {
+    const x = Math.floor(pos / L) + DELTA[m][0], y = pos % L + DELTA[m][1];
+    if (x < 0 || x >= L || y < 0 || y >= L || c[site(x, y)] === HOLE) return null;
+    const nxt = site(x, y);
+    steps.push([pos, nxt]);
+    [c[pos], c[nxt]] = [c[nxt], c[pos]];
+    pos = nxt;
+  }
+  return steps;
+}
+function applySteps(conf, steps) {
+  const c = conf.slice();
+  let sign = 1;
+  for (const [a, b] of steps) { sign *= swapSign(c, a, b); [c[a], c[b]] = [c[b], c[a]]; }
+  return [c, sign];
+}
+function neelViolations(conf) {
+  const out = new Set();
+  for (let s = 0; s < N; s++) if (conf[s] !== HOLE && conf[s] !== neelSpin(s)) out.add(s);
+  return out;
+}
+function wrongPairs(conf) {
+  const w = neelViolations(conf), out = [];
+  for (const a of w) for (const b of neighbours(a)) if (w.has(b) && a < b && conf[a] !== conf[b]) out.push([a, b]);
+  return out;
+}
+function repairNeel(conf) {
+  const c = conf.slice(), swaps = [];
+  for (;;) {
+    if (neelViolations(c).size === 0) return swaps;
+    const pairs = wrongPairs(c);
+    if (!pairs.length) return null;
+    const [a, b] = choice(pairs);
+    swaps.push([a, b]);
+    [c[a], c[b]] = [c[b], c[a]];
+  }
+}
+function interleavedSteps(conf, hops, p) {
+  const c = conf.slice(), steps = [];
+  let nRep = 0;
+  for (const [a, b] of hops) {
+    while (Math.random() < p) {
+      const pairs = wrongPairs(c);
+      if (!pairs.length) break;
+      const [x, y] = choice(pairs);
+      [c[x], c[y]] = [c[y], c[x]];
+      steps.push([x, y]);
+      nRep++;
+    }
+    [c[a], c[b]] = [c[b], c[a]];
+    steps.push([a, b]);
+  }
+  const rest = repairNeel(c);
+  return rest === null ? null : [steps.concat(rest), nRep + rest.length];
+}
+// Erschoepfende Suche: Reparaturen beliebig zwischen die Spruenge gemischt, Ziel Neel. Wie tj_gui.search_signs
+function searchSigns(conf, hops, cap = 20000) {
+  const found = new Map(), seen = new Set();
+  const stack = [[0, conf.slice(), 1, []]];
+  while (stack.length && found.size < 2) {
+    const [k, c, sign, steps] = stack.pop();
+    const key = k + "|" + sign + "|" + c.map(v => v + 1).join("");
+    if (seen.has(key)) continue;
+    if (seen.size >= cap) return { found, cut: true };
+    seen.add(key);
+    if (k === hops.length && neelViolations(c).size === 0) { if (!found.has(sign)) found.set(sign, steps); continue; }
+    const moves = wrongPairs(c).map(p => [p, 0]);
+    if (k < hops.length) moves.push([hops[k], 1]);
+    for (const [[a, b], isHop] of moves) {
+      const nc = c.slice();
+      const sg = sign * swapSign(c, a, b);
+      [nc[a], nc[b]] = [nc[b], nc[a]];
+      stack.push([k + isHop, nc, sg, steps.concat([[a, b]])]);
+    }
+  }
+  return { found, cut: false };
+}
+
+// --- zwei Loecher (zwei_loch.py) ---
+const WHEN = { ende: "Reparatur am Ende", nach_a: "Reparatur nach A (bevor B weiterläuft)", sofort: "Reparatur sofort" };
+const parseMoves = t => t.toUpperCase().split("").filter(c => "RLUD".includes(c)).join("");
+function parseOffset(t) {
+  const p = t.replace(";", ",").split(",").map(v => v.trim());
+  if (p.length !== 2 || p.some(v => !/^[+-]?\d+$/.test(v))) return null;
+  return [parseInt(p[0], 10), parseInt(p[1], 10)];
+}
+function randomStartWith(holes) {
+  const conf = neelRandomStart();
+  for (const h of holes) {
+    if (conf[h] === HOLE) continue;
+    const cand = [];
+    for (let s = 0; s < N; s++) if (conf[s] === HOLE && !holes.includes(s) && sublattice(s) === sublattice(h)) cand.push(s);
+    const s = choice(cand);
+    [conf[h], conf[s]] = [conf[s], conf[h]];
+  }
+  return conf;
+}
+function pathSites(h, moves) {
+  let x = Math.floor(h / L), y = h % L;
+  const out = [h];
+  for (const m of moves) {
+    x += DELTA[m][0]; y += DELTA[m][1];
+    if (x < 0 || x >= L || y < 0 || y >= L) return null;
+    out.push(site(x, y));
+  }
+  return out;
+}
+const hopsOf = ps => ps.slice(1).map((s, i) => [ps[i], s]);
+const defaultOrder = (na, nb) => "A".repeat(na) + "B".repeat(nb);
+function merge(ha, hb, order) {
+  let ia = 0, ib = 0;
+  return (order || defaultOrder(ha.length, hb.length)).split("").map(o => (o === "A" ? ha[ia++] : hb[ib++]));
+}
+function* allOrders(na, nb) {
+  if (na === 0 && nb === 0) { yield ""; return; }
+  if (na > 0) for (const r of allOrders(na - 1, nb)) yield "A" + r;
+  if (nb > 0) for (const r of allOrders(na, nb - 1)) yield "B" + r;
+}
+function legal(conf, hops) {
+  const c = conf.slice();
+  for (const [a, b] of hops) {
+    if (c[a] !== HOLE || c[b] === HOLE) return false;
+    [c[a], c[b]] = [c[b], c[a]];
+  }
+  return true;
+}
+function classify(pa, pb) {
+  const out = [];
+  if (pa.some(s => pb.includes(s))) out.push("Kreuzung A/B");
+  if (new Set(pa).size !== pa.length || new Set(pb).size !== pb.length) out.push("Schleife");
+  return out.join(", ") || "kein Platz doppelt";
+}
+function stepCounts(start, steps) {
+  const c = start.slice();
+  let m = 0, nm = 0;
+  for (const [a, b] of steps) {
+    if (c[a] === HOLE || c[b] === HOLE) {
+      m++;
+      const src = c[a] === HOLE ? b : a;
+      if (neelViolations(c).has(src)) nm++;
+    }
+    [c[a], c[b]] = [c[b], c[a]];
+  }
+  return { m, s: steps.length - m, nMinus: nm };
+}
+function repairAvailable(c) {
+  const swaps = [];
+  for (;;) {
+    const pairs = wrongPairs(c);
+    if (!pairs.length) return swaps;
+    const [a, b] = choice(pairs);
+    [c[a], c[b]] = [c[b], c[a]];
+    swaps.push([a, b]);
+  }
+}
+function strategySteps(start, hops, order, when) {
+  const c = start.slice();
+  let steps = [];
+  const lastA = order.lastIndexOf("A");
+  hops.forEach(([a, b], k) => {
+    if (when === "sofort") steps = steps.concat(repairAvailable(c));
+    [c[a], c[b]] = [c[b], c[a]];
+    steps.push([a, b]);
+    if (when === "nach_a" && k === lastA) steps = steps.concat(repairAvailable(c));
+  });
+  const rest = repairNeel(c);
+  return rest === null ? null : steps.concat(rest);
+}
+function searchOrders(start, ha, hb, order, cap = 20000) {
+  const orders = order === "ALLE" ? [...allOrders(ha.length, hb.length)] : [order || defaultOrder(ha.length, hb.length)];
+  const found = new Map();
+  let cut = false;
+  for (const o of orders) {
+    const hops = merge(ha, hb, o);
+    if (!legal(start, hops)) continue;
+    const r = searchSigns(start, hops, cap);
+    cut = cut || r.cut;
+    for (const [sg, st] of r.found) if (!found.has(sg)) found.set(sg, st);
+    if (found.size === 2) break;
+  }
+  return { found, cut };
+}
+function randomTrial(ma, mb, off, order, tries = 2000) {
+  for (let t = 0; t < tries; t++) {
+    const a = Math.floor(Math.random() * N), x = Math.floor(a / L), y = a % L;
+    const bx = x + off[0], by = y + off[1];
+    if (bx < 0 || bx >= L || by < 0 || by >= L || (bx === x && by === y)) continue;
+    const b = site(bx, by);
+    const pa = pathSites(a, ma), pb = pathSites(b, mb);
+    if (!pa || !pb) continue;
+    const start = randomStartWith([a, b]);
+    const ha = hopsOf(pa), hb = hopsOf(pb);
+    if (order === "ALLE") {
+      let ok = false;
+      for (const o of allOrders(ha.length, hb.length)) if (legal(start, merge(ha, hb, o))) { ok = true; break; }
+      if (!ok) continue;
+    } else if (!legal(start, merge(ha, hb, order))) continue;
+    return { start, a, b, ha, hb, pa, pb };
+  }
+  return null;
+}
+
+// ---------- Darstellung ----------
+const BONDS = [];
+for (let s = 0; s < N; s++) {
+  const x = Math.floor(s / L), y = s % L;
+  if (y + 1 < L) BONDS.push([s, site(x, y + 1)]);
+  if (x + 1 < L) BONDS.push([s, site(x + 1, y)]);
+}
+const pos = s => [MARGIN + (s % L) * CELL, MARGIN + Math.floor(s / L) * CELL];
+
+function renderSVG(st, opt = {}) {
+  const bg = st.sign > 0 ? "plus" : "minus";
+  const parts = [`<rect width="${BOARD_PX}" height="${BOARD_PX}" class="bg-${bg}"/>`];
+  for (const [a, b] of BONDS) {
+    const [x1, y1] = pos(a), [x2, y2] = pos(b);
+    const hot = opt.hover && opt.hover[0] === a && opt.hover[1] === b;
+    parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="bond${hot ? " hot" : ""}"/>`);
+  }
+  if (opt.neel) for (let s = 0; s < N; s++) {
+    const [x, y] = pos(s);
+    parts.push(`<circle cx="${x}" cy="${y}" r="${CELL * 0.38}" class="${sublattice(s) === 0 ? "neel-up" : "neel-dn"}"/>`);
+  }
+  for (const [a, b] of st.trail) {
+    const [x1, y1] = pos(a), [x2, y2] = pos(b);
+    parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="trail"/>`);
+  }
+  for (const s of opt.wrong || []) {
+    const [x, y] = pos(s);
+    parts.push(`<circle cx="${x}" cy="${y}" r="${CELL * 0.43}" class="wrong"/>`);
+  }
+  const r = CELL * 0.3;
+  for (let s = 0; s < N; s++) {
+    const [x, y] = pos(s), v = st.conf[s];
+    const cls = v === HOLE ? `hole on-${bg}` : v === UP ? "up" : "dn";
+    parts.push(`<circle cx="${x}" cy="${y}" r="${r}" class="${cls}"/>`);
+  }
+  if (st.labels) for (const [s, name] of st.labels) {
+    const [x, y] = pos(s);
+    parts.push(`<text x="${x}" y="${y}" class="lab" text-anchor="middle" dominant-baseline="central">${name}</text>`);
+  }
+  return parts.join("");
+}
+
+// ---------- Zustand und Bedienung ----------
+const S = {
+  conf: [], sign: 1, trail: [], labels: new Map(), history: [], redo: [], wrong: null, hover: null,
+  saved: [], testHead: "", testResults: [], deviants: [], devIndex: 0, found: [], foundIndex: { 1: 0, "-1": 0 },
+  twoResults: [], variantIndex: 0, busy: false, playTimer: null,
+};
+const $ = id => document.getElementById(id);
+const board = $("board"), out = $("out");
+const fmt = s => (s > 0 ? "+1" : "−1");
+
+function snapshot() { return { conf: S.conf.slice(), sign: S.sign, trail: S.trail.slice(), labels: new Map(S.labels) }; }
+function restore(st, redraw = true) {
+  S.conf = st.conf.slice(); S.sign = st.sign; S.trail = st.trail.slice(); S.labels = new Map(st.labels); S.wrong = null;
+  if (redraw) draw();
+}
+function pushHistory() { S.history.push(snapshot()); S.redo = []; S.wrong = null; }
+function clickSwap(a, b, redraw = true) {
+  pushHistory();
+  if (S.conf[a] === HOLE || S.conf[b] === HOLE) S.trail.push([a, b]);
+  S.sign *= swapSign(S.conf, a, b);
+  [S.conf[a], S.conf[b]] = [S.conf[b], S.conf[a]];
+  const la = S.labels.get(a), lb = S.labels.get(b);
+  S.labels.delete(a); S.labels.delete(b);
+  if (la) S.labels.set(b, la);
+  if (lb) S.labels.set(a, lb);
+  if (redraw) draw();
+}
+function undo(redraw = true) { if (S.history.length) { S.redo.push(snapshot()); restore(S.history.pop(), redraw); } }
+function redo(redraw = true) { if (S.redo.length) { S.history.push(snapshot()); restore(S.redo.pop(), redraw); } }
+function undoAll(redraw = true) { while (S.history.length) undo(false); if (redraw) draw(); }
+function newStart() {
+  stopPlay();
+  S.conf = neelRandomStart(); S.sign = 1; S.trail = []; S.labels = new Map(); S.history = []; S.redo = []; S.wrong = null;
+  draw();
+}
+
+function draw() {
+  board.innerHTML = renderSVG(S, { hover: S.hover, neel: $("c-neel").checked, wrong: S.wrong });
+  const up = S.conf.filter(v => v === UP).length, dn = S.conf.filter(v => v === DN).length;
+  $("status").innerHTML =
+    `<span>Néel falsch: <b>${neelViolations(S.conf).size}</b></span>` +
+    `<span>Vorzeichen <b>${fmt(S.sign)}</b></span>` +
+    `<span>up ${up} · dn ${dn} · Löcher ${N - up - dn}</span>` +
+    `<span>Schritt ${S.history.length}/${S.history.length + S.redo.length}</span>`;
+  $("b-undo").disabled = !S.history.length;
+  $("b-redo").disabled = !S.redo.length;
+  $("b-play").disabled = !S.redo.length && !S.playTimer;
+}
+function drawThumbs() {
+  const box = $("thumbs");
+  const items = [];
+  for (let i = 0; i < 16; i++) {
+    if (i < S.saved.length) items.push(`<svg viewBox="0 0 ${BOARD_PX} ${BOARD_PX}" data-i="${i}" role="button" aria-label="Bild ${i + 1} laden">${renderSVG(S.saved[i], { neel: $("c-neel").checked })}</svg>`);
+    else items.push(`<div class="empty"></div>`);
+  }
+  box.innerHTML = items.join("");
+}
+function setOut(text, busy = false) { out.textContent = text; out.classList.toggle("busy", busy); }
+
+function svgPoint(e) {
+  const p = board.createSVGPoint();
+  p.x = e.clientX; p.y = e.clientY;
+  return p.matrixTransform(board.getScreenCTM().inverse());
+}
+function bondAt(e) {
+  const p = svgPoint(e);
+  let best = null, bestD = 0.4 * CELL;
+  for (const [a, b] of BONDS) {
+    const [x1, y1] = pos(a), [x2, y2] = pos(b);
+    const d = Math.hypot(p.x - (x1 + x2) / 2, p.y - (y1 + y2) / 2);
+    if (d < bestD) { best = [a, b]; bestD = d; }
+  }
+  return best;
+}
+board.addEventListener("click", e => {
+  if (S.busy) return;
+  const bond = bondAt(e);
+  if (!bond) return;
+  const [a, b] = bond;
+  if (S.conf[a] === S.conf[b]) return;
+  stopPlay();
+  clickSwap(a, b);
+});
+board.addEventListener("pointermove", e => {
+  if (e.pointerType !== "mouse") return;
+  const b = bondAt(e);
+  const same = (b === null && S.hover === null) || (b && S.hover && b[0] === S.hover[0] && b[1] === S.hover[1]);
+  if (!same) { S.hover = b; draw(); }
+});
+board.addEventListener("pointerleave", () => { if (S.hover) { S.hover = null; draw(); } });
+
+function stopPlay() { if (S.playTimer) { clearInterval(S.playTimer); S.playTimer = null; $("b-play").textContent = "Abspielen"; } }
+function togglePlay() {
+  if (S.playTimer) { stopPlay(); draw(); return; }
+  if (!S.redo.length) return;
+  $("b-play").textContent = "Anhalten";
+  S.playTimer = setInterval(() => { redo(); if (!S.redo.length) { stopPlay(); draw(); } }, 450);
+}
+
+// ---------- Tests (Port der GUI-Funktionen) ----------
+const tick = () => new Promise(r => setTimeout(r, 0));
+function setBusy(on) {
+  S.busy = on;
+  document.querySelectorAll(".panel button, .board-col button").forEach(b => { b.disabled = on; });
+  if (!on) draw();
+}
+async function guarded(fn) {
+  if (S.busy) return;
+  stopPlay();
+  setBusy(true);
+  try { await fn(); } finally { setBusy(false); }
+}
+
+function loadResult(r, label) {
+  stopPlay();
+  S.conf = r.start.slice(); S.sign = 1; S.trail = []; S.labels = new Map(r.labels || []);
+  S.history = []; S.redo = []; S.wrong = null;
+  for (const [a, b] of r.steps) clickSwap(a, b, false);
+  undoAll(false);
+  draw();
+  setOut(S.testHead + `\n${label}: Endvorzeichen ${fmt(r.sign)}, ${r.nSwaps} Reparatur-Vertauschungen („Vor“ oder „Abspielen“ spielt Weg + Reparatur ab)`);
+}
+
+async function runLoopTest(interleave, nTrials = 100) {
+  const moves = parseMoves($("in-path").value);
+  if (!moves) { setOut("Weg leer: Folge aus R, L, U, D eingeben (z.B. RRULLD)"); return; }
+  const results = [];
+  let fails = 0, attempts = 0;
+  while (results.length < nTrials && attempts < 100000) {
+    attempts++;
+    const start = neelRandomStart();
+    const holes = []; for (let s = 0; s < N; s++) if (start[s] === HOLE) holes.push(s);
+    const hops = walkSteps(start, choice(holes), moves);
+    if (!hops) continue;
+    let res;
+    if (interleave !== null) res = interleavedSteps(start, hops, interleave);
+    else { const sw = repairNeel(applySteps(start, hops)[0]); res = sw === null ? null : [hops.concat(sw), sw.length]; }
+    if (!res) { fails++; continue; }
+    results.push({ start, steps: res[0], sign: applySteps(start, res[0])[1], nSwaps: res[1] });
+    if (results.length % 20 === 0) { setOut(`rechnet … ${results.length}/${nTrials}`, true); await tick(); }
+  }
+  if (!results.length) { setOut("Kein gültiger, reparierbarer Lauf gefunden"); return; }
+  const n = results.length, plus = results.filter(r => r.sign > 0).length, major = 2 * plus >= n ? 1 : -1;
+  S.deviants = results.filter(r => r.sign !== major); S.devIndex = 0; S.testResults = results;
+  const mode = interleave === null ? "Reparatur am Ende" : interleave >= 1 ? "Reparatur sofort" : "Reparatur zwischendurch";
+  S.testHead = `Weg ${moves} (${mode}): ${n} Läufe, Vorzeichen +1: ${plus}×, −1: ${n - plus}×` +
+    (fails ? `   (${fails} nicht reparierbare Läufe verworfen)` : "") + "\n" +
+    (S.deviants.length ? `${S.deviants.length} Abweichler (Vorzeichen ${fmt(-major)}, Mehrheit ${fmt(major)})` : "immer das gleiche Vorzeichen");
+  setOut(S.testHead);
+}
+async function runSignSearch(nTrials = 100) {
+  const moves = parseMoves($("in-path").value);
+  if (!moves) { setOut("Weg leer: Folge aus R, L, U, D eingeben (z.B. RRULLD)"); return; }
+  const results = [];
+  let attempts = 0, capped = 0;
+  while (results.length < nTrials && attempts < 100000) {
+    attempts++;
+    const start = neelRandomStart();
+    const holes = []; for (let s = 0; s < N; s++) if (start[s] === HOLE) holes.push(s);
+    const hops = walkSteps(start, choice(holes), moves);
+    if (!hops) continue;
+    const r = searchSigns(start, hops);
+    capped += r.cut ? 1 : 0;
+    results.push({ start, hops: hops.length, found: r.found, labels: [] });
+    if (results.length % 5 === 0) { setOut(`sucht … ${results.length}/${nTrials}`, true); await tick(); }
+  }
+  setFound(results, `Weg ${moves}, Suche nach Reparatur-Vertauschungen (zwischen den Sprüngen erlaubt), ${results.length} Starts:`, capped);
+}
+function setFound(results, head, capped) {
+  const cnt = f => results.filter(r => f(r.found)).length;
+  const plus = cnt(f => f.has(1)), minus = cnt(f => f.has(-1)), both = cnt(f => f.size === 2), none = cnt(f => f.size === 0);
+  S.found = results; S.foundIndex = { 1: 0, "-1": 0 };
+  S.testHead = head + `\n+1 erreichbar: ${plus}×, −1 erreichbar: ${minus}×, beide: ${both}×, nur +1: ${plus - both}×, ` +
+    `nur −1: ${minus - both}×, keines: ${none}×` + (capped ? `   (${capped}× Suche abgebrochen)` : "") +
+    "\n„Beispiel +1“ / „Beispiel −1“ laden gefundene Prozesse";
+  setOut(S.testHead);
+}
+function loadFound(sign) {
+  const rs = S.found.filter(r => r.found.has(sign));
+  if (!rs.length) { setOut(S.testHead + `\nKein Beispiel mit Vorzeichen ${fmt(sign)}`); return; }
+  const i = S.foundIndex[sign] % rs.length;
+  S.foundIndex[sign]++;
+  const r = rs[i], steps = r.found.get(sign);
+  loadResult({ start: r.start, steps, sign, labels: r.labels, nSwaps: steps.length - r.hops }, `Beispiel ${i + 1}/${rs.length} für ${fmt(sign)}`);
+}
+function loadDeviation() {
+  if (!S.deviants.length) { setOut((S.testHead ? S.testHead + "\n" : "") + "Keine Abweichler im letzten Ein-Loch-Test"); return; }
+  S.devIndex++;
+  const n = (S.devIndex - 1) % S.deviants.length + 1;
+  loadResult(S.deviants[n - 1], `Abweichler ${n}/${S.deviants.length}`);
+}
+function loadRandomExample() {
+  if (!S.testResults.length) { setOut("Erst einen Ein-Loch-Test ausführen"); return; }
+  loadResult(choice(S.testResults), "Zufallsbeispiel");
+}
+
+function twoInputs(allowAll) {
+  const ma = parseMoves($("in-a").value), mb = parseMoves($("in-b").value);
+  const order = $("in-order").value.trim().toUpperCase() || null;
+  const off = parseOffset($("in-off").value);
+  if (!off) { setOut("B-Start relativ zu A als „Zeile,Spalte“ eingeben, z.B. -1,1"); return null; }
+  if (!ma) { setOut("Weg A leer: Folge aus R, L, U, D eingeben (z.B. RR)"); return null; }
+  if (order === "ALLE" && !allowAll) { setOut("Reihenfolge „alle“ gibt es nur für die Suche; hier eine feste Folge aus A/B oder leer (erst A, dann B) eingeben"); return null; }
+  if (order && order !== "ALLE" && order.split("").sort().join("") !== defaultOrder(ma.length, mb.length)) {
+    setOut(`Reihenfolge braucht genau ${ma.length}× A und ${mb.length}× B`); return null;
+  }
+  return { ma, mb, off, order };
+}
+const headLine = (p, geo) => `A ${p.ma}, B ${p.mb || "–"}, B-Start (${p.off[0]},${p.off[1]}) relativ zu A, Reihenfolge ${p.order || "erst A, dann B"}: ${geo}`;
+
+async function runTwoTest(nTrials = 100) {
+  const p = twoInputs(false);
+  if (!p) return;
+  const results = [];
+  let skipped = 0, geo = "";
+  while (results.length < nTrials && skipped < 50 * nTrials) {
+    const t = randomTrial(p.ma, p.mb, p.off, p.order);
+    if (!t) break;
+    const o = p.order || defaultOrder(t.ha.length, t.hb.length);
+    const hops = merge(t.ha, t.hb, o);
+    const runs = {};
+    for (const w of Object.keys(WHEN)) runs[w] = strategySteps(t.start, hops, o, w);
+    if (Object.values(runs).some(v => v === null)) { skipped++; continue; }
+    geo = classify(t.pa, t.pb);
+    const labels = [[t.a, "A"], [t.b, "B"]], variants = {};
+    for (const [w, steps] of Object.entries(runs)) {
+      const c = stepCounts(t.start, steps);
+      variants[w] = { start: t.start, steps, sign: applySteps(t.start, steps)[1], nSwaps: c.s, nMinus: c.nMinus, labels };
+    }
+    results.push(variants);
+    if (results.length % 10 === 0) { setOut(`rechnet … ${results.length}/${nTrials}`, true); await tick(); }
+  }
+  if (!results.length) { setOut("Kein gültiger, reparierbarer Lauf gefunden (Weg verlässt das Brett, trifft ein anderes Loch oder lässt sich nicht per Paartausch reparieren)"); return; }
+  const n = results.length, lines = [headLine(p, geo) + `; ${n} Starts` + (skipped ? ` (${skipped} nicht reparierbare verworfen)` : "")];
+  for (const [w, name] of Object.entries(WHEN)) {
+    const plus = results.filter(r => r[w].sign > 0).length;
+    const nms = [...new Set(results.map(r => r[w].nMinus))].sort((x, y) => x - y);
+    lines.push(`${name}: +1: ${plus}×, −1: ${n - plus}×, n₋ ∈ {${nms.join(", ")}}`);
+  }
+  const differs = (r, w) => r.ende.sign !== r[w].sign;
+  lines.push(`Vorzeichen im selben Start verschieden: Ende/nach A ${results.filter(r => differs(r, "nach_a")).length}×, ` +
+    `Ende/sofort ${results.filter(r => differs(r, "sofort")).length}×   („Variante laden“ zeigt sie)`);
+  results.sort((r1, r2) => Number(!(differs(r1, "nach_a") || differs(r1, "sofort"))) - Number(!(differs(r2, "nach_a") || differs(r2, "sofort"))));
+  S.twoResults = results; S.variantIndex = 0;
+  S.testHead = lines.join("\n");
+  setOut(S.testHead);
+}
+function loadVariant() {
+  if (!S.twoResults.length) { setOut("Erst „Strategien vergleichen“ oder „Beispiel Kreuzung“ ausführen"); return; }
+  const whens = Object.keys(WHEN), k = S.variantIndex++;
+  const i = Math.floor(k / whens.length) % S.twoResults.length, w = whens[k % whens.length];
+  const v = S.twoResults[i][w];
+  loadResult(v, `Start ${i + 1}/${S.twoResults.length}, ${WHEN[w]}, n₋ = ${v.nMinus}`);
+}
+async function runTwoSearch(nTrials = 50) {
+  const p = twoInputs(true);
+  if (!p) return;
+  const results = [];
+  let capped = 0, geo = "";
+  while (results.length < nTrials) {
+    const t = randomTrial(p.ma, p.mb, p.off, p.order);
+    if (!t) break;
+    geo = classify(t.pa, t.pb);
+    const r = searchOrders(t.start, t.ha, t.hb, p.order);
+    capped += r.cut ? 1 : 0;
+    results.push({ start: t.start, hops: t.ha.length + t.hb.length, found: r.found, labels: [[t.a, "A"], [t.b, "B"]] });
+    if (results.length % 5 === 0) { setOut(`sucht … ${results.length}/${nTrials}`, true); await tick(); }
+  }
+  if (!results.length) { setOut("Kein gültiger Lauf gefunden"); return; }
+  setFound(results, headLine(p, geo) + `; Suche nach Reparaturen (zwischen den Sprüngen erlaubt), ${results.length} Starts:`, capped);
+}
+async function crossingExample() {
+  $("in-a").value = "RR"; $("in-b").value = "DD"; $("in-off").value = "-1,1"; $("in-order").value = "";
+  await runTwoTest(20);
+  loadVariant();
+}
+
+// ---------- Verdrahtung ----------
+const on = (id, fn) => $(id).addEventListener("click", fn);
+on("b-new", () => { if (!S.busy) newStart(); });
+on("b-undo", () => { stopPlay(); undo(); });
+on("b-redo", () => { stopPlay(); redo(); });
+on("b-undoall", () => { stopPlay(); undoAll(); });
+on("b-play", togglePlay);
+on("b-check", () => { S.wrong = neelViolations(S.conf); draw(); });
+on("b-cleartrail", () => { if (S.trail.length) { pushHistory(); S.trail = []; draw(); } });
+$("c-neel").addEventListener("change", () => { draw(); drawThumbs(); });
+on("b-t-end", () => guarded(() => runLoopTest(null)));
+on("b-t-mid", () => guarded(() => runLoopTest(0.5)));
+on("b-t-now", () => guarded(() => runLoopTest(1.0)));
+on("b-search", () => guarded(() => runSignSearch()));
+on("b-dev", loadDeviation);
+on("b-rand", loadRandomExample);
+on("b-ex-plus", () => loadFound(1));
+on("b-ex-minus", () => loadFound(-1));
+on("b-two-test", () => guarded(() => runTwoTest()));
+on("b-variant", loadVariant);
+on("b-two-search", () => guarded(() => runTwoSearch()));
+on("b-cross", () => guarded(crossingExample));
+on("b-save", () => { if (S.saved.length === 16) S.saved.shift(); S.saved.push({ conf: S.conf.slice(), sign: S.sign, trail: S.trail.slice() }); drawThumbs(); });
+on("b-clearsaved", () => { S.saved = []; drawThumbs(); });
+$("thumbs").addEventListener("click", e => {
+  const svg = e.target.closest("svg[data-i]");
+  if (!svg || S.busy) return;
+  const st = S.saved[Number(svg.dataset.i)];
+  stopPlay();
+  S.conf = st.conf.slice(); S.sign = st.sign; S.trail = st.trail.slice(); S.labels = new Map();
+  S.history = []; S.redo = []; S.wrong = null;
+  draw();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "s") $("b-save").click();
+  if (e.key === "ArrowRight") { stopPlay(); redo(); }
+  if (e.key === "ArrowLeft") { stopPlay(); undo(); }
+});
+
+// Start: Kreuzungsbeispiel geladen, damit gleich etwas zu sehen ist
+newStart();
+drawThumbs();
+setOut("Lädt das Kreuzungsbeispiel …", true);
+guarded(crossingExample);
+</script>
