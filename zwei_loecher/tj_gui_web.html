@@ -191,6 +191,7 @@ svg .lab { fill: var(--label); font-family: var(--font-ui); font-weight: 600; fo
       <textarea id="in-note" class="plain" rows="2"></textarea>
       <div class="row">
         <button id="b-claude">Für Claude speichern</button>
+        <button id="b-copy">Vergleich kopieren</button>
         <span class="hint" id="db-state">Speicher wird verbunden …</span>
       </div>
       <div class="saved-list" id="saved-cmp"></div>
@@ -953,6 +954,30 @@ function pack(mv) {
 }
 const unpack = p => (p ? analyse(p.name || "", fromRows(p.start), p.schritte || []) : null);
 
+function exportText() {
+  const data = { notiz: $("in-note").value.trim(), A: pack(S.A), B: pack(S.B) };
+  return "t-J Vorzeichenbrett: Vergleich\n" + compareText(S.A, S.B) + "\n\nDaten:\n" + JSON.stringify(data);
+}
+function copyComparison() {
+  if (!S.A && !S.B) { setOut("Erst eine Bewegung als A (und B) merken."); return; }
+  const text = exportText();
+  const showSelected = msg => {
+    setOut(text);
+    const r = document.createRange();
+    r.selectNodeContents(out);
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(r);
+    $("db-state").textContent = msg;
+  };
+  try {
+    navigator.clipboard.writeText(text).then(
+      () => { setOut(text); $("db-state").textContent = "Kopiert – jetzt im Chat einfügen."; },
+      () => showSelected("Text unten ist markiert – kopieren und im Chat einfügen."));
+  } catch (e) {
+    showSelected("Text unten ist markiert – kopieren und im Chat einfügen.");
+  }
+}
+
 let DB = null;
 async function saveForClaude() {
   if (!DB) { setOut("Speichern für Claude geht nur auf der veröffentlichten Seite in claude.ai (angemeldet)."); return; }
@@ -1002,7 +1027,8 @@ async function connectDb() {
   try {
     DB = window.claude && window.claude.use ? await window.claude.use("db") : null;
   } catch (e) { DB = null; }
-  $("db-state").textContent = DB ? "Claude kann gespeicherte Vergleiche lesen." : "Nur auf der veröffentlichten Seite in claude.ai verfügbar.";
+  $("db-state").textContent = DB ? "Claude kann gespeicherte Vergleiche lesen."
+    : "Speichern ist in dieser Ansicht nicht verfügbar – „Vergleich kopieren“ und im Chat einfügen.";
   $("b-claude").disabled = !DB;
   if (DB) {
     DB.collection("vergleiche").orderBy("nr", "desc").limit(20).onSnapshot(renderSavedList, () => {
@@ -1020,6 +1046,7 @@ on("b-lA", () => loadMovement("A"));
 on("b-lB", () => loadMovement("B"));
 on("b-cmp", () => setOut(S.A || S.B ? compareText(S.A, S.B) : "Erst Bewegungen als A und B merken."));
 on("b-claude", saveForClaude);
+on("b-copy", copyComparison);
 on("b-undo", () => { stopPlay(); undo(); });
 on("b-redo", () => { stopPlay(); redo(); });
 on("b-undoall", () => { stopPlay(); undoAll(); });
