@@ -23,10 +23,14 @@ Kurzfassung:
   J-Fluktuationen (Vertauschungen, die keine Reparaturen sind), kommt auch für Paare Frustration zurück
   (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet. Die Raupe
   ist dagegen immun gegen Fluktuationen auf ihrem Weg (der Schwanz bewegt jeden Spin ein zweites Mal), ein
-  einzelnes Loch nicht. Mit freien Fluktuationen in seiner Nähe wird das Raupenpaar deutlich weniger frustriert
-  (mit zwei Fluktuationen noch weniger) und bindet Fluktuationen (7.7, 7.8); eine Gegenprobe mit zufälligen
-  Vorzeichen zeigt, dass das an der echten Vorzeichenstruktur liegt: ein Kandidat für den ODLRO-Mechanismus bei
-  aufgeweichtem Néel.
+  einzelnes Loch nicht.
+- **Abfall mit der Entfernung (7.9):** Die Raupe allein ist unbeweglich (exakt flaches Band). Beweglich wird
+  das Paar nur durch J-Wenden (Pivot, Domino), und deren Vorzeichen hängt davon ab, ob die Nachbarbindung,
+  deren Spins sie bewegen, antiparallel ist. In einem Néel mit zufälligen Fluktuationen fällt die
+  Paarkohärenz deshalb mit der Entfernung ab. Kein Abfall, wenn diese Bindungen in jeder Komponente
+  antiparallel sind (z. B. Singuletts, kurzreichweitiges RVB): Dann ist jedes Vorzeichen geometrisch
+  festgelegt, Paare sind Bosonen mit endlicher Masse, und ODLRO folgt aus der Bose-Kondensation (Argument,
+  nicht gerechnet). Die frühere Deutung „Raupe + gebundene Fluktuation“ (7.7, 7.8) ist dadurch überholt.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -42,6 +46,7 @@ Kurzfassung:
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
 | `fluktuationen2.py` | wie `fluktuationen.py`, aber bis zu zwei Fluktuationen, mit Gegenprobe (Abschnitt 7.8, etwa 6 min auf 4 Kernen; numpy, scipy) | `python fluktuationen2.py` |
+| `beweglichkeit.py` | J-Wende über intakte und gebrochene Bindungen; Bandstruktur des Paares auf dem 12×12-Torus (Bloch-Blöcke mit Verschiebungsvorzeichen), sauber und mit bis zu zwei Fluktuationen (Abschnitt 7.9, etwa 4 min auf 4 Kernen; numpy, scipy; `--pruefen` vergleicht auf kleinen Tori mit der vollen Prozessmatrix) | `python beweglichkeit.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
@@ -454,8 +459,12 @@ dass Hin- und Rückweg gleich behandelt werden (die Prozessmatrix ist symmetrisc
 | mit Fluktuation, nur Prozesse mit Vertauschung | 0,923 | 0,881 |
 | mit Fluktuation, alle Prozesse | 0,917 | 0,866 |
 
-- Die vollständige Aufzählung bestätigt 7.3: Im sauberen Néel sind alle Prozesse mit Vertauschung
-  unfrustriert. Mit einer Fluktuation sind sie frustriert.
+- **Korrektur (7.9):** Die Zeile „sauberes Néel, nur Prozesse mit Vertauschung“ ist trivial. Ein Pivot oder
+  Domino landet nach seinen zwei Sprüngen in einem Zustand mit einer Fluktuation neben dem Paar und wird in
+  dieser Aufzählung dort zerlegt (2 Sprünge, dann 1 Vertauschung). Zwischen sauberen Zuständen bleibt nur
+  „umklappen und zurück“ (Diagonalbeiträge), daher 1,000. Dass Pivot und Domino im sauberen Néel unfrustriert
+  sind, zeigt 7.3 (auf dem Torus bestätigt in 7.9). Mit einer Fluktuation sind die Prozesse mit Vertauschung
+  frustriert.
 - **Kleinste frustrierte Schleife** (das Paar bleibt stehen): J klappt ein Nachbarpaar neben dem Paar um;
   das Paar dreht diese Fluktuation mit 2 Sprüngen und 1 Vertauschung um 90°; J klappt sie zurück.
   3 Vertauschungen, kein Lochaustausch → −1.
@@ -535,7 +544,14 @@ immer beide Vorzeichen erreichbar. Gesucht ist ein Mechanismus, der trotzdem Paa
    (Eine frühere Fassung nannte hier 0,993 / 0,901 / 0,882 aus einer Aufzählung, deren Prozessmatrix nicht ganz
    symmetrisch war; die Abweichung beträgt höchstens 0,003. Die Gegenprobe ist neu.)
 
-**Mechanismus (Hypothese, gestützt auf diese Zahlen):** Das kohärente Objekt ist ein Raupenpaar, das eine
+**Korrektur (7.9):** Die Auswahl „Prozesse ohne Vertauschung oder ohne Lochsprung“ enthält Pivot und Domino,
+zerlegt in zwei Hälften über den Zustand mit einer Fluktuation neben dem Paar. „Raupe + freie J-Fluktuationen“
+heißt also eigentlich „Raupe + J-Wenden + Fluktuationen“, und die „gebundene Fluktuation“ ist zum großen Teil der
+Zwischenzustand einer J-Wende. Nimmt man die Wenden heraus, ist das Paar fast unbeweglich. Außerdem misst das
+Verhältnis nur die lokale Frustration, nicht den Abfall mit der Entfernung. Die folgende Hypothese ist deshalb
+durch 7.9 ersetzt.
+
+**Mechanismus (Hypothese, überholt durch 7.9):** Das kohärente Objekt ist ein Raupenpaar, das eine
 Spinfluktuation an sich bindet. Freie Fluktuationen auf seinem Weg ändern sein Vorzeichen nicht (1.), und die
 gebundene Fluktuation liefert beim Wenden das Vorzeichen, das den Lochaustausch ausgleicht (3.). Was beim
 einzelnen Loch die Vorzeichen zufällig macht, wird beim Paar zur Ressource. Physikalisch ist das ein
@@ -569,10 +585,113 @@ Anteile des Grundzustands (Raupe + Fluktuationen, höchstens 2) mit 0 / 1 / 2 Fl
 - **Der Grundzustand trägt die Fluktuationen:** Bei 0,3 hat er zu 54 % zwei Fluktuationen in der Nähe des
   Paares. Das Paar ist von einer Spinwolke umgeben, und diese Wolke macht seine Bewegung kohärenter.
 
-Das stützt die Hypothese aus 7.7 und entkräftet die Sorge, dass ein aufgeweichtes Néel die Paarkohärenz
-zerstört: Für ein einzelnes Loch werden die Vorzeichen zufällig, für das Paar wird die Bewegung durch die
-Aufweichung weniger frustriert. Grenzen: kleines Fenster, Fluktuationen höchstens zwei Plätze vom Paar
-entfernt, einfache Gewichte statt Energien; ob der Trend mit drei und mehr Fluktuationen weitergeht, ist offen.
+Diese Zahlen gelten für Fluktuationen in der Nähe des Paares, die mit ihm wandern. Sie sagen nichts darüber, ob
+die Kohärenz mit der Entfernung abfällt, und die Auswahl enthält J-Wenden (Korrektur in 7.7). Die frühere
+Schlussfolgerung, ein aufgeweichtes Néel mache die Paarbewegung insgesamt kohärenter, ist durch 7.9 ersetzt: Für
+freie Fluktuationen im Hintergrund ist ein Abfall mit der Entfernung zu erwarten. Grenzen: kleines Fenster,
+Fluktuationen höchstens zwei Plätze vom Paar entfernt, einfache Gewichte statt Energien.
+
+### 7.9 Fällt die Paarkohärenz mit der Entfernung ab? (`beweglichkeit.py`)
+
+ODLRO heißt: G(R) = ⟨Δ†(R) Δ(0)⟩ bleibt für große Abstände R endlich. G(R) summiert über alle Prozesse, die
+ein Paar von 0 nach R bringen. Das Verhältnis λ_max(M)/λ_max(|M|) aus 7.3–7.8 ist lokal und sagt darüber nichts.
+Beispiel unten: Raupe mit Fluktuationen, aber ohne J-Wenden, hat das Verhältnis 0,92 und ist trotzdem fast
+unbeweglich.
+
+**Exakte Grundlage.** Aus 7.1 folgt für zwei beliebige Prozesse mit gleichem Anfang und gleichem Ende:
+
+    relatives Vorzeichen = (−1)^(n↑ des einen + n↑ des anderen) · sgn(relative Lochpermutation)
+
+n↑ = Zahl der Lochsprünge, die einen ↑-Spin bewegen; Spin-Vertauschungen zählen in dieser Form nicht. Ein Abfall
+mit R entsteht, wenn die Wege nach R sich in der Parität von n↑ unterscheiden, je nachdem, was unterwegs liegt.
+
+1. **Einzelnes Loch:** n↑ = Zahl der ↑-Spins, die es verschoben hat. Jede Fluktuation am Weg dreht das
+   Vorzeichen (7.6). Abfall mit der Entfernung (Phase-String).
+2. **Raupe:** n↑ ist immer gerade; aus dem Hintergrund kommt kein Abfall. Aber die Raupe allein ist unbeweglich:
+   Auf dem Torus ist ihr oberstes Band exakt flach (alle 72 Impulse am Maximum). Es gibt dann räumlich begrenzte
+   Eigenzustände; das Paar kommt durch Interferenz nicht vom Fleck, auch so fällt G(R) ab.
+   Fluktuationen ohne J-Wenden helfen kaum (Beweglichkeit 6–9 % des vorzeichenfreien Werts, Tabelle unten).
+3. **Beweglich wird das Paar durch J-Wenden** (Pivot, Domino). Im sauberen Néel ist das Band dann gekrümmt, mit
+   eindeutigem Maximum bei K = 0. Die Krümmung ist praktisch dieselbe wie mit Pivot und Domino allein (2,887
+   gegen 2,881 bei Gewicht 1); die Raupe trägt zur Beweglichkeit nichts bei.
+4. **Vorzeichen einer J-Wende.** Pivot und Domino bewegen die beiden Spins einer Nachbarbindung je einmal. Ihr
+   Beitrag zu n↑ ist die Zahl der ↑-Spins auf dieser Bindung: bei antiparallelen Spins fest, bei parallelen
+   umgedreht. Paar a = (3,3), b = (4,3); Pivot: a läuft über c = (3,4) nach a′ = (4,4); Domino: beide Löcher auf
+   c, a′. Vergleich mit Raupenwegen zum selben Ziel (jeder Spin zweimal bewegt), danach mit reinen
+   Vertauschungen bis Néel geheilt (alle Heilwege geben dasselbe Vorzeichen):
+
+| Fluktuation vorher | Pivot gegen Raupe mit Wende | Domino gegen zwei Raupenschritte |
+|---|---|---|
+| keine | +1 | +1 |
+| genau die bewegte Bindung c–a′ umgeklappt | +1 | +1 |
+| c mit seinem äußeren Nachbarn (bewegte Bindung gebrochen) | **−1** | **−1** |
+| a′ mit seinem oberen Nachbarn (bewegte Bindung gebrochen) | **−1** | **−1** |
+| Bindung auf der anderen Seite des Paares (nicht berührt) | +1 | +1 |
+| Bindung zwei Plätze entfernt (nicht berührt) | +1 | +1 |
+
+   Eine umgeklappte Bindung ist weiterhin antiparallel und stört nicht. Es kommt nur darauf an, ob die bewegte
+   Bindung gebrochen ist, also parallele Spins trägt.
+
+**Folgerung.**
+
+- **Aufgeweichtes Néel mit zufälligen, freien Fluktuationen:** Ein Teil der J-Wenden trifft gebrochene
+  Bindungen. Welche das sind, hängt vom Weg und vom Zeitpunkt ab. Je weiter das Paar läuft, desto mehr Wenden
+  braucht es, desto stärker heben sich die Beiträge auf. G(R) fällt etwa exponentiell ab, mit einer Länge von der
+  Größenordnung des Abstands zwischen gebrochenen Bindungen am Weg (abgeschätzt, nicht gerechnet). Die
+  Formulierung aus 7.7/7.8 führt also zu einem Abfall; das Argument „bei aufgeweichtem Néel sind beide Vorzeichen
+  erreichbar“ gilt auch für die Wenden des Paares.
+- **Kein Abfall**, wenn jede Bindung, über die das Paar wendet, in jeder Komponente der Wellenfunktion
+  antiparallel ist (S^z = 0 auf der Bindung, z. B. ein Singulett (↑↓ − ↓↑)/√2). Dann gibt die Wende in jeder
+  Komponente dasselbe Vorzeichen. Das ist das Bild eines kurzreichweitigen RVB-Hintergrunds: Das Paar wendet,
+  indem es mit einem Singulett die Plätze tauscht. Nach einer Wende liegt die bewegte Bindung wieder neben dem
+  Paar (Pivot dreht Paar und Bindung im 2×2-Quadrat, Domino tauscht sie). Für eine Verschiebung braucht das Paar
+  aber immer wieder Bindungen aus dem Hintergrund.
+
+**Begründungskette für ODLRO** (unter dieser Bedingung):
+
+1. Das Vorzeichen jedes Prozesses hängt nur von der Geometrie ab, nicht vom Hintergrund und nicht von R:
+   Raupenschritte haben gerades n↑, Wenden über antiparallele Bindungen einen festen Beitrag, Vertauschungen
+   zählen nicht (Regel oben, Tabelle).
+2. Paare sind untereinander bosonisch: Platztausch zweier Paare = zwei Lochvertauschungen = +1 (7.2).
+3. Ein Paar ist beweglich: eindeutiges Bandmaximum bei K = 0, endliche Masse (Tabelle unten). Die verbleibende
+   Frustration zwischen geraden Raupenschritten und Wenden ist überall dieselbe. Sie macht das Paar schwerer,
+   erzeugt aber keinen Abfall mit R.
+4. Ein dünnes Gas von Bosonen mit endlicher Masse und ohne Vorzeichen untereinander kondensiert bei T = 0 (in
+   2D bei T = 0 echte langreichweitige Ordnung), also G(R) → konstant ≠ 0. Paarsymmetrie aus der Eichung:
+   d-Welle (7.3). Dieser Schritt ist das Standardargument für Bosonen und hier nicht gerechnet.
+
+**Bandstruktur auf dem Torus.** 12×12, periodisch. Verschiebungen um (dx, dy) mit dx + dy gerade erhalten das
+Néel-Muster. Mit ihnen (samt Vorzeichen aus der Umordnung der fermionischen Erzeuger) zerfällt die
+Prozessmatrix in Blöcke M(K), 72 verschiedene Impulse. Prozesse wie in 7.8 (1–3 Elementarschritte zwischen
+Zuständen), aber ohne Fenster. Geprüft auf 6×6 und 8×8: Die Spektren aller Blöcke zusammen stimmen mit dem
+Spektrum der vollen Prozessmatrix überein (Abweichung ≤ 6·10⁻¹³, `--pruefen`). Die Zahlen für das saubere Néel
+stammen aus einer eigenen Aufzählung nur mit sauberen Zuständen, damit Pivot und Domino ganz enthalten sind.
+**Beweglichkeit** = Krümmung des obersten Bandes am Maximum geteilt durch dieselbe Größe ohne Vorzeichen
+(= Masse ohne Vorzeichen / Masse mit Vorzeichen; 0 = flaches Band).
+
+| Prozesse | Impulse am Maximum (von 72) | Beweglichkeit bei Gewicht 1 / 0,3 / 0,1 | Verhältnis bei 0,3 |
+|---|---|---|---|
+| sauber, nur Raupe | 72 (flach) | 0 / 0 / 0 | 0,667 |
+| sauber, nur Pivot + Domino | 1 | 1,00 / 1,00 / 1,00 | 1,000 |
+| sauber, alle (Raupe, Pivot, Domino) | 1 | 0,74 / 0,46 / 0,23 | 0,828 |
+| Raupe + bis zu 2 Fluktuationen, ohne J-Wenden | 1 | 0,06 / 0,09 / 0,06 | 0,924 |
+| Auswahl aus 7.7/7.8 (nur Sprünge oder nur Vertauschungen), bis zu 2 | 1 | 0,38 / 0,46 / 0,39 | 0,932 |
+| alle Prozesse, bis zu 1 Fluktuation | 1 | 0,20 / 0,25 / 0,27 | 0,785 |
+| alle Prozesse, bis zu 2 Fluktuationen | 1 | 0,45 / 0,49 / 0,46 | 0,867 |
+
+„Ohne J-Wenden“ heißt: Lochsprünge nur, wenn sich die Zahl der Fluktuationen nicht ändert; damit fallen die
+Hälften von Pivot und Domino weg. Die Fluktuationen sind hier an das Paar gebunden (höchstens zwei Plätze
+entfernt); freie Fluktuationen im übrigen Hintergrund enthält die Rechnung nicht. Sie zeigt also, dass ein
+Paar mit Spinwolke in einem sonst sauberen Néel beweglich ist (endliche Masse, eindeutiges Maximum bei K = 0),
+nicht aber, wie schnell die Kohärenz in einem fluktuierenden Hintergrund abfällt.
+
+**Stand der Hypothese:** Die Raupe sorgt für ein Vorzeichen, das nicht vom Hintergrund abhängt, die J-Wenden
+für Beweglichkeit. Die Wenden sind nur dann vom Hintergrund unabhängig, wenn die Bindungen, über die sie laufen,
+antiparallel sind. ODLRO verlangt in diesem Bild also kurzreichweitig gepaarte Spins (Singuletts) dort, wo das
+Paar wendet. Ein Néel mit zufälligen Fluktuationen reicht nicht. Offen: (a) den Abfall in einem fluktuierenden
+Hintergrund direkt rechnen (Paar plus eigene Bindung in einem Hintergrund mit zufälligen Fluktuationen);
+(b) ob die Dynamik selbst dafür sorgt, dass neben einem Paar bevorzugt Singuletts liegen (Energie);
+(c) Quantenhintergrund statt einzelner S^z-Konfigurationen.
 
 ## 8. Grenzen
 
