@@ -1013,7 +1013,7 @@ function renderSavedList(snap) {
     const b = document.createElement("button");
     const when = d.zeit ? new Date(d.zeit).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" }) : "";
     const title = document.createElement("div");
-    title.textContent = `Vergleich ${d.nr}: ${(d.A && d.A.name) || "A"} / ${(d.B && d.B.name) || "B"}`;
+    title.textContent = `Vergleich ${d.nr}${d.von ? " (von " + d.von + ")" : ""}: ${(d.A && d.A.name) || "A"} / ${(d.B && d.B.name) || "B"}`;
     const meta = document.createElement("div");
     meta.className = "meta";
     meta.textContent = when + (d.notiz ? " · " + d.notiz : "");
@@ -1021,7 +1021,9 @@ function renderSavedList(snap) {
     b.addEventListener("click", () => {
       S.A = unpack(d.A); S.B = unpack(d.B);
       storeSlots(); drawSlots();
-      setOut(`Vergleich ${d.nr} geladen.\n\n` + compareText(S.A, S.B));
+      setOut(`Vergleich ${d.nr} geladen${d.von ? " (von " + d.von + ")" : ""}.` +
+        (d.notiz ? `\n\nNotiz: ${d.notiz}` : "") + "\n\n" + compareText(S.A, S.B) +
+        "\n\n„A laden“ bzw. „B laden“ zeigt die Bewegung auf dem Brett.");
     });
     box.append(b);
   }
