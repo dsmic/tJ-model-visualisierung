@@ -31,6 +31,11 @@ Kurzfassung:
   antiparallel sind (z. B. Singuletts, kurzreichweitiges RVB): Dann ist jedes Vorzeichen geometrisch
   festgelegt, Paare sind Bosonen mit endlicher Masse, und ODLRO folgt aus der Bose-Kondensation (Argument,
   nicht gerechnet). Die frühere Deutung „Raupe + gebundene Fluktuation“ (7.7, 7.8) ist dadurch überholt.
+- **Idee für ODLRO (7.10):** Ein Singulett ist eine Bindung, die nie repariert werden muss. Tauscht ein Paar mit
+  ihm den Platz (zwei Sprünge, kein J), liefert das Singulett von selbst das Vorzeichen, das sonst die
+  Reparatur liefert. Im Singulett-Hintergrund bewegt sich das Paar daher ohne Vorzeichen, ohne Reparatur und
+  ohne Spur; ein einzelnes Loch dagegen nicht. Das ist das Gegenstück zu Nagaoka (ein Loch ist im Ferromagneten
+  vorzeichenfrei) und im Kern Andersons RVB-Bild, hier aus der Vorzeichenregel hergeleitet.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -692,6 +697,65 @@ Paar wendet. Ein Néel mit zufälligen Fluktuationen reicht nicht. Offen: (a) de
 Hintergrund direkt rechnen (Paar plus eigene Bindung in einem Hintergrund mit zufälligen Fluktuationen);
 (b) ob die Dynamik selbst dafür sorgt, dass neben einem Paar bevorzugt Singuletts liegen (Energie);
 (c) Quantenhintergrund statt einzelner S^z-Konfigurationen.
+
+### 7.10 Idee: Warum ODLRO herauskommen sollte
+
+Simulation allein liefert kein ODLRO; man braucht einen Grund. Der folgende Gedankengang verbindet die Ergebnisse
+aus 7.1–7.9.
+
+**1. Ein Singulett ist eine dauerhaft reparierte Bindung.** Eine J-Wende (Domino, Pivot) bewegt die zwei Spins
+einer Nachbarbindung je einmal. Im Néel landen sie mit falscher Orientierung und brauchen eine Reparatur; deren
+Vertauschung gleicht den Lochaustausch aus (7.3). In der Form (−1)^(n↑) · sgn(π_Loch) übernimmt diesen Ausgleich
+der eine ↑-Spin auf der Bindung. Die Tabelle in 7.9 zeigt: Die Bindung in Néel-Orientierung und dieselbe Bindung
+umgeklappt geben **dasselbe** Vorzeichen; nur muss im einen Fall danach repariert werden, im anderen nicht. Das
+Umklappen vorher ist genau die „Vertauschung, die den künftigen Weg berührt“ aus 7.4, die dasselbe Vorzeichen
+hat wie die Reparatur danach. Ein Singulett (↑↓ − ↓↑)/√2 ist die Überlagerung beider Fälle mit festem
+Vorzeichen. Es hat keine falsche Orientierung, wird beim Wenden einfach mitgenommen (zwei Sprünge, kein J; die
+Sprünge sind spinrotationsinvariant, das Singulett bleibt ein Singulett) und liefert in jeder Komponente genau
+einen ↑-Spin, also den Ausgleich. **Die Reparatur passiert von selbst.**
+
+**2. Im Singulett-Hintergrund bewegt sich das Paar vorzeichenfrei.** Wenn das Paar nur mit Singuletts den Platz
+tauscht, haben alle seine Prozesse die Vorzeichenstruktur von Pivot und Domino im sauberen Néel: unfrustriert in
+der d-Wellen-Eichung (7.3; Torus 7.9: Verhältnis 1,000, eindeutiges Maximum bei K = 0). Es hinterlässt keine
+Spur: Das Singulett liegt danach dort, wo das Paar war, der Hintergrund ist wieder eine Singulett-Bedeckung. Die
+Raupe dagegen verschiebt einen Spin um zwei Plätze und reißt dabei ein Singulett auseinander; sie gehört im
+Singulett-Hintergrund nicht zur niederenergetischen Bewegung.
+
+**3. Ein einzelnes Loch kann das nicht.** Es bewegt von einem Singulett nur einen Spin. In den beiden Komponenten
+ist dieser einmal ↑, einmal ↓, das Vorzeichen also zufällig (Phase-String), und das Singulett bleibt zerrissen
+zurück. Löcher gewinnen im Singulett-Hintergrund kohärente Bewegungsenergie nur als Paar: ein kinetischer Grund
+für Paarbildung.
+
+**4. Gegenstück zu Nagaoka.** Aus derselben Regel: Ein einzelnes Loch ist genau dann vorzeichenfrei, wenn alle
+Spins, die es bewegt, gleich orientiert sind, also im Ferromagneten (Satz von Nagaoka). Ein Paar ist
+vorzeichenfrei, wenn die Spins, die es einmal bewegt, in antiparallelen Bindungen stecken, also im
+Singulett-Hintergrund. So wie ein Loch sich ein ferromagnetisches Umfeld schafft, sollten Lochpaare sich ein
+Singulett-Umfeld schaffen. Ein Singulett-Hintergrund kostet gegenüber dem Antiferromagneten wenig
+Austauschenergie (resonierende Singulett-Zustände liegen energetisch nahe am Néel-Grundzustand; aus dem
+Gedächtnis), und die Paare gewinnen dort Bewegungsenergie in der Ordnung t²/ΔE statt t²J/ΔE² mit Reparatur.
+
+**5. Von da zu ODLRO.** Im Singulett-Hintergrund sind die Paare (a) vorzeichenfrei beweglich (2.), (b)
+untereinander Bosonen (Platztausch +1, 7.2) und (c) unabhängig vom Hintergrund, weil die Bindungen, die sie
+bewegen, in jeder Komponente antiparallel sind. Das effektive Modell sind harte Bosonen mit positivem Hüpfen
+(d-Wellen-Eichung). Dann sind nach Perron–Frobenius alle Amplituden des Grundzustands positiv, und G(R) ist eine
+Summe positiver Terme: Auslöschung ist unmöglich. G(R) kann nur noch durch Lokalisierung abfallen (Kristall,
+Valenzbindungskristall); in einer resonierenden Singulett-Flüssigkeit kondensieren die Bosonen, G(R) → konstant.
+Die Eichung macht daraus ein d-Wellen-Kondensat.
+
+**Folgerungen, die zur Physik der Kuprate passen:** Bei kleiner Dotierung bleibt der Hintergrund Néel-artig, und
+in einem Quanten-Antiferromagneten trägt eine Nachbarbindung zu gut einem Viertel parallele Spins
+(1/2 + (2/3)⟨S·S⟩ ≈ 0,28 mit ⟨S·S⟩ ≈ −0,335, aus dem Gedächtnis). Die Wenden sind dann inkohärent, also gibt es
+kein ODLRO. Erst wenn genug Paare da sind, um den Hintergrund in Singuletts zu drücken, wird die Paarbewegung
+kohärent: Supraleitung erst ab einer Mindestdotierung, d-Welle, Paare als Träger.
+
+**Was davon geprüft ist und was nicht.** Geprüft: Vorzeichenregel (7.1), Pivot/Domino unfrustriert in der
+d-Wellen-Eichung (7.3, 7.9), beide Orientierungen der bewegten Bindung geben dasselbe Vorzeichen (7.9), Paartausch
++1 (7.2), Raupe flach (7.9). Argument, nicht gerechnet: dass der Hintergrund sich tatsächlich in Singuletts
+ordnet (Energiebilanz), dass das effektive Bosonenmodell in einer nicht-orthogonalen Singulett-Basis wirklich
+vorzeichenfrei bleibt, und der Schritt vom vorzeichenfreien Bosonenmodell zur Kondensation. Neu ist das Bild
+nicht: Es ist im Kern Andersons RVB-Idee (Singulett-Flüssigkeit, Dotierung → Supraleitung) bzw. das dotierte
+Dimermodell von Rokhsar und Kivelson (aus dem Gedächtnis). Neu ist hier nur, dass es aus der Vorzeichenregel
+und dem Reparatur-Bild folgt.
 
 ## 8. Grenzen
 
