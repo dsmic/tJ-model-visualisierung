@@ -118,7 +118,10 @@ def build_states():
 
 
 def steps(up, dn):
-    focus = set(holes(up, dn)) | set(wrong(up, dn))
+    """Elementarschritte: alle Lochsprünge im Fenster und Vertauschungen nahe an den Löchern. Die Auswahl hängt nur
+    von den Lochplätzen ab; die ändern sich durch eine Vertauschung nicht, also werden Hin- und Rückweg gleich
+    behandelt und die Prozessmatrix ist symmetrisch."""
+    focus = set(holes(up, dn))
     for x in holes(up, dn):
         for n in NB[x]:
             if n in WIN and (up | dn) >> n & 1:
@@ -241,7 +244,10 @@ def main():
     procs = enumerate_processes(states)
     kinds = np.array([kind(*s) for s in states])
     print(f"{len(states)} Zustände ({int(np.sum(kinds == 0))} ohne Fluktuation), {len(procs)} Übergänge, "
-          f"Aufzählung {time.time() - t0:.0f} s.\n")
+          f"Aufzählung {time.time() - t0:.0f} s.")
+    asym = sum(1 for (j, i), lst in procs.items() if len(procs.get((i, j), [])) != len(lst)
+               or sum(p[0] for p in procs.get((i, j), [])) != sum(p[0] for p in lst))
+    print(f"Symmetrieprüfung: {asym} Übergänge ohne passenden Rückweg.\n")
     n = len(states)
     clean = np.where(kinds == 0)[0]
 
@@ -268,12 +274,34 @@ def main():
         print(f"| {name} | {out[0][0]:.3f} | {out[1][0]:.3f} | {out[0][1]} |")
     print()
     print("Raupe allein und Raupe mit freien J-Fluktuationen (Prozesse ohne Vertauschung oder ohne Lochsprung):\n")
+    print("Gegenprobe: dieselben Prozesse, aber jeder Übergang mit Lochsprüngen bekommt ein zufälliges Vorzeichen "
+          "(gleich für Hin- und Rückweg). Ist das Verhältnis dann ähnlich, kommt es nur von der Verdünnung durch "
+          "reine Spinprozesse.\n")
     print("| Prozesse | Gewicht Vertauschung | Verhältnis | Entartung | Anteil des Grundzustands mit Fluktuation |")
     print("|---|---|---|---|---|")
+    rnd = np.random.default_rng(1)
+    flip = {}
+
+    def random_matrix(keep, ws):
+        M = np.zeros((n, n))
+        for (j, i), lst in procs.items():
+            for sg, m, s in lst:
+                if keep(i, j, m, s):
+                    if m > 0:
+                        key = (min(i, j), max(i, j))
+                        flip.setdefault(key, rnd.choice([-1, 1]))
+                        sg = flip[key] * abs(sg)
+                    M[j, i] += sg * ws ** s
+        return M
     for ws in (1.0, 0.3, 0.1):
         for name, keep, sub in (("Raupe, sauberes Néel", lambda i, j, m, s: s == 0, clean),
-                                ("Raupe + freie J-Fluktuationen", lambda i, j, m, s: s == 0 or m == 0, None)):
-            M = matrix(keep, ws)
+                                ("Raupe + freie J-Fluktuationen", lambda i, j, m, s: s == 0 or m == 0, None),
+                                ("Gegenprobe: zufällige Vorzeichen der Sprungprozesse",
+                                 lambda i, j, m, s: s == 0 or m == 0, "zufall")):
+            if isinstance(sub, str):
+                M, sub = random_matrix(keep, ws), None
+            else:
+                M = matrix(keep, ws)
             idx = np.arange(n) if sub is None else sub
             M = M[np.ix_(idx, idx)]
             used = np.abs(M).sum(axis=0) > 0

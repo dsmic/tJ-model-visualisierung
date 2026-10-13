@@ -23,8 +23,10 @@ Kurzfassung:
   J-Fluktuationen (Vertauschungen, die keine Reparaturen sind), kommt auch für Paare Frustration zurück
   (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet. Die Raupe
   ist dagegen immun gegen Fluktuationen auf ihrem Weg (der Schwanz bewegt jeden Spin ein zweites Mal), ein
-  einzelnes Loch nicht. Mit freien Fluktuationen in seiner Nähe wird das Raupenpaar fast unfrustriert und
-  bindet eine Fluktuation (7.7): ein Kandidat für den ODLRO-Mechanismus bei aufgeweichtem Néel.
+  einzelnes Loch nicht. Mit freien Fluktuationen in seiner Nähe wird das Raupenpaar deutlich weniger frustriert
+  (mit zwei Fluktuationen noch weniger) und bindet Fluktuationen (7.7, 7.8); eine Gegenprobe mit zufälligen
+  Vorzeichen zeigt, dass das an der echten Vorzeichenstruktur liegt: ein Kandidat für den ODLRO-Mechanismus bei
+  aufgeweichtem Néel.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -39,6 +41,7 @@ Kurzfassung:
 | `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse). Zusätzlich: zwei Bewegungen A und B merken, abspielen und vergleichen (relatives Vorzeichen, Regelprüfung); auf der veröffentlichten Seite speichert „Für Claude speichern“ den Vergleich im Datenspeicher des Artifacts (Sammlung `vergleiche`) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
+| `fluktuationen2.py` | wie `fluktuationen.py`, aber bis zu zwei Fluktuationen, mit Gegenprobe (Abschnitt 7.8, etwa 6 min auf 4 Kernen; numpy, scipy) | `python fluktuationen2.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
@@ -440,14 +443,16 @@ nötig), und wie groß λ physikalisch ist (Energienenner der Zwischenzustände)
 Bisher war der Hintergrund zwischen zwei Paarschritten immer exakt Néel. Jetzt darf J auch ein richtiges
 Nachbarpaar umklappen (Fluktuation: zwei benachbarte falsche Spins), höchstens eine Fluktuation, höchstens
 zwei Plätze vom Paar entfernt. Alle Prozesse aus 1 bis 3 Elementarschritten zwischen solchen Zuständen werden
-vollständig aufgezählt (6×6-Fenster, 1456 Zustände, 72 192 Übergänge); keine Schrittart ist vorgegeben.
+vollständig aufgezählt (6×6-Fenster, 1456 Zustände, 70 600 Übergänge); keine Schrittart ist vorgegeben.
+Vertauschungen werden nur nahe an den Löchern betrachtet; diese Auswahl hängt nur von den Lochplätzen ab, so
+dass Hin- und Rückweg gleich behandelt werden (die Prozessmatrix ist symmetrisch, das Skript prüft es).
 
 | Zustandsraum, Prozesse | Verhältnis (Vertauschung : Sprung = 1 : 1) | Verhältnis (0,3 : 1) |
 |---|---|---|
 | sauberes Néel, alle Prozesse | 0,902 | 0,749 |
 | sauberes Néel, nur Prozesse mit Vertauschung | **1,000** | **1,000** |
 | mit Fluktuation, nur Prozesse mit Vertauschung | 0,923 | 0,881 |
-| mit Fluktuation, alle Prozesse | 0,917 | 0,867 |
+| mit Fluktuation, alle Prozesse | 0,917 | 0,866 |
 
 - Die vollständige Aufzählung bestätigt 7.3: Im sauberen Néel sind alle Prozesse mit Vertauschung
   unfrustriert. Mit einer Fluktuation sind sie frustriert.
@@ -509,21 +514,26 @@ immer beide Vorzeichen erreichbar. Gesucht ist ein Mechanismus, der trotzdem Paa
    einzelnes Loch, in jedem Hintergrund ein festes Vorzeichen.
 2. **Ihr einziges Vorzeichen ist der Lochaustausch**, und der macht die reine Raupe frustriert (Liniengraph,
    flaches Band, 7.3).
-3. **Freie J-Fluktuationen in der Nähe des Paares heben das fast vollständig auf.** Vollständige Aufzählung wie
-   in 7.6 (6×6-Fenster, höchstens eine Fluktuation), Prozesse ohne Vertauschung (Raupe, auch durch eine
-   Fluktuation hindurch oder sie schluckend) und Prozesse ohne Lochsprung (Fluktuation entsteht, wandert,
-   vergeht):
+3. **Freie J-Fluktuationen in der Nähe des Paares verringern die Frustration deutlich.** Vollständige
+   Aufzählung wie in 7.6 (6×6-Fenster, höchstens eine Fluktuation), Prozesse ohne Vertauschung (Raupe, auch
+   durch eine Fluktuation hindurch oder sie schluckend) und Prozesse ohne Lochsprung (Fluktuation entsteht,
+   wandert, vergeht). **Gegenprobe:** dieselben Prozesse, aber jeder Übergang mit Lochsprüngen bekommt ein
+   zufälliges Vorzeichen. Wird das Verhältnis dadurch kaum schlechter, kommt die Verbesserung nur von der
+   Verdünnung durch die (vorzeichenfreien) reinen Spinprozesse.
 
-| Prozesse | Gewicht Vertauschung | Verhältnis | Entartung | Anteil des Grundzustands mit Fluktuation |
+| Gewicht Vertauschung | Raupe, sauberes Néel | Raupe + freie J-Fluktuationen | Gegenprobe: zufällige Vorzeichen | Anteil des Grundzustands mit Fluktuation |
 |---|---|---|---|---|
-| Raupe, sauberes Néel | beliebig | 0,708 | 9 | – |
-| Raupe + freie J-Fluktuationen | 1 | **0,993** | 1 | 72 % |
-| Raupe + freie J-Fluktuationen | 0,3 | **0,901** | 1 | 68 % |
-| Raupe + freie J-Fluktuationen | 0,1 | **0,882** | 1 | 55 % |
+| 1 | 0,708 | 0,992 | 0,976 | 71 % |
+| 0,3 | 0,708 | **0,898** | 0,761 | 66 % |
+| 0,1 | 0,708 | **0,881** | 0,698 | 54 % |
 
-   (In diesem Fenster zählen auch Hin-und-zurück-Sprünge als Diagonalbeiträge; deshalb ist die saubere Raupe
-   hier 0,708 statt 0,351 wie in 7.3.) Mit allen Prozessen, also auch Pivot und Domino, ist es wieder etwas
-   frustrierter (0,917 bzw. 0,867, Tabelle in 7.6).
+   Bei Gewicht 1 ist der hohe Wert also überwiegend Verdünnung; bei 0,3 und 0,1 (physikalisch liegt das Gewicht
+   eines J-Prozesses relativ zu einem Sprung eher bei J/2t ≈ 0,2) sind die echten Vorzeichen deutlich besser als
+   zufällige. In diesem Fenster zählen auch Hin-und-zurück-Sprünge als Diagonalbeiträge; deshalb ist die
+   saubere Raupe hier 0,708 statt 0,351 wie in 7.3. Mit allen Prozessen, also auch Pivot und Domino, ist es
+   etwas frustrierter (0,917 bzw. 0,866, Tabelle in 7.6).
+   (Eine frühere Fassung nannte hier 0,993 / 0,901 / 0,882 aus einer Aufzählung, deren Prozessmatrix nicht ganz
+   symmetrisch war; die Abweichung beträgt höchstens 0,003. Die Gegenprobe ist neu.)
 
 **Mechanismus (Hypothese, gestützt auf diese Zahlen):** Das kohärente Objekt ist ein Raupenpaar, das eine
 Spinfluktuation an sich bindet. Freie Fluktuationen auf seinem Weg ändern sein Vorzeichen nicht (1.), und die
@@ -533,8 +543,36 @@ Lochpaar mit Spinwolke (einem umgeklappten Paar, also einer Singulett- bzw. Trip
 zum Bild des Cooper-Paares im RVB-Bild.
 
 Offen bzw. nicht geprüft: welche Paarsymmetrie dieser Zustand hat (Überlapp mit der s-Welle 0, mit einer
-gleichförmigen d-Welle nur 0,05 bis 0,37), wie es mit mehreren Fluktuationen und realistischen Energien
-aussieht, und ob der Tausch zweier solcher Paare +1 ergibt.
+gleichförmigen d-Welle nur 0,05 bis 0,37), wie es mit realistischen Energien aussieht, und ob der Tausch zweier
+solcher Paare +1 ergibt. Zwei Fluktuationen: 7.8.
+
+### 7.8 Zwei Fluktuationen (`fluktuationen2.py`)
+
+Wie 7.7, aber bis zu zwei Fluktuationen in der Nähe des Paares: 15 218 Zustände (60 ohne, 1396 mit einer,
+13 762 mit zwei Fluktuationen), 2,58 Millionen Prozesse, Prozessmatrix symmetrisch (geprüft). Innerhalb dieses
+Laufs ist „höchstens 1“ etwas anders abgeschnitten als in 7.7 (Prozesse über Zustände mit zwei Fluktuationen
+fehlen dort), daher die leicht anderen Werte.
+
+| Gewicht Vertauschung | Raupe, sauber | Raupe + Fluktuationen, höchstens 1 | höchstens 2 | Gegenprobe, höchstens 2, zufällige Vorzeichen | alle Prozesse, höchstens 1 | alle Prozesse, höchstens 2 |
+|---|---|---|---|---|---|---|
+| 1 | 0,708 | 0,991 | 0,997 | 0,993 | 0,889 | 0,926 |
+| 0,3 | 0,708 | 0,880 | **0,932** | 0,721 | 0,813 | 0,887 |
+| 0,1 | 0,708 | 0,878 | **0,903** | 0,725 | 0,827 | 0,881 |
+
+Anteile des Grundzustands (Raupe + Fluktuationen, höchstens 2) mit 0 / 1 / 2 Fluktuationen: 7 / 34 / 59 %
+(Gewicht 1), 9 / 36 / 54 % (0,3), 25 / 52 / 23 % (0,1).
+
+- **Mehr Aufweichung, weniger Frustration:** Mit einer zweiten erlaubten Fluktuation steigt das Verhältnis in
+  allen Fällen weiter (Raupe + Fluktuationen bei 0,3: 0,880 → 0,932; alle Prozesse: 0,813 → 0,887).
+- **Gegenprobe:** Mit zufälligen Vorzeichen der Sprungprozesse bleibt es bei 0,3 und 0,1 auf dem Niveau der
+  sauberen Raupe (0,72). Die Verbesserung kommt also aus der Vorzeichenstruktur, nicht aus der Verdünnung.
+- **Der Grundzustand trägt die Fluktuationen:** Bei 0,3 hat er zu 54 % zwei Fluktuationen in der Nähe des
+  Paares. Das Paar ist von einer Spinwolke umgeben, und diese Wolke macht seine Bewegung kohärenter.
+
+Das stützt die Hypothese aus 7.7 und entkräftet die Sorge, dass ein aufgeweichtes Néel die Paarkohärenz
+zerstört: Für ein einzelnes Loch werden die Vorzeichen zufällig, für das Paar wird die Bewegung durch die
+Aufweichung weniger frustriert. Grenzen: kleines Fenster, Fluktuationen höchstens zwei Plätze vom Paar
+entfernt, einfache Gewichte statt Energien; ob der Trend mit drei und mehr Fluktuationen weitergeht, ist offen.
 
 ## 8. Grenzen
 
