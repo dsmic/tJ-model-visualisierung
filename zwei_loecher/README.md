@@ -26,8 +26,8 @@ Kurzfassung:
   einzelnes Loch nicht.
 - **Abfall mit der Entfernung (7.9):** Die Raupe allein ist unbeweglich (exakt flaches Band). Beweglich wird
   das Paar nur durch J-Wenden (Pivot, Domino), und deren Vorzeichen hängt davon ab, ob die Nachbarbindung,
-  deren Spins sie bewegen, antiparallel ist. In einem Néel mit zufälligen Fluktuationen fällt die
-  Paarkohärenz deshalb mit der Entfernung ab. Kein Abfall, wenn diese Bindungen in jeder Komponente
+  deren Spins sie bewegen, antiparallel ist. Bei *eingefrorenen* zufälligen Fluktuationen fällt die
+  Paarkohärenz deshalb mit der Entfernung ab (mit Swap-Dynamik nicht, siehe 7.11). Kein Abfall, wenn diese Bindungen in jeder Komponente
   antiparallel sind (z. B. Singuletts, kurzreichweitiges RVB): Dann ist jedes Vorzeichen geometrisch
   festgelegt, Paare sind Bosonen mit endlicher Masse, und ODLRO folgt aus der Bose-Kondensation (Argument,
   nicht gerechnet). Die frühere Deutung „Raupe + gebundene Fluktuation“ (7.7, 7.8) ist dadurch überholt.
@@ -36,6 +36,11 @@ Kurzfassung:
   Reparatur liefert. Im Singulett-Hintergrund bewegt sich das Paar daher ohne Vorzeichen, ohne Reparatur und
   ohne Spur; ein einzelnes Loch dagegen nicht. Das ist das Gegenstück zu Nagaoka (ein Loch ist im Ferromagneten
   vorzeichenfrei) und im Kern Andersons RVB-Bild, hier aus der Vorzeichenregel hergeleitet.
+- **Swaps als Filter (7.11):** Vertauschungen tragen kein Vorzeichen, sie erzeugen alternative Wege. Im
+  Quanten-Grundzustand wird für jeden Paarschritt über alle Varianten summiert; übrig bleibt der konstruktive
+  Überschuss mit festem, überall gleichem Vorzeichen. Die Auslöschung macht das Paar schwerer, aber nicht
+  inkohärent über große Entfernungen. Für die Raupe sind alle Varianten konstruktiv, für ein einzelnes Loch
+  nicht: Das begünstigt Paare, und Paare sind Bosonen.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -639,7 +644,8 @@ mit R entsteht, wenn die Wege nach R sich in der Parität von n↑ unterscheiden
 
 **Folgerung.**
 
-- **Aufgeweichtes Néel mit zufälligen, freien Fluktuationen:** Ein Teil der J-Wenden trifft gebrochene
+- **Aufgeweichtes Néel mit zufälligen, eingefrorenen Fluktuationen** (dieser Punkt setzt voraus, dass jeder
+  Weg einen festen Hintergrund sieht; mit Swap-Dynamik gilt er nicht, siehe 7.11): Ein Teil der J-Wenden trifft gebrochene
   Bindungen. Welche das sind, hängt vom Weg und vom Zeitpunkt ab. Je weiter das Paar läuft, desto mehr Wenden
   braucht es, desto stärker heben sich die Beiträge auf. G(R) fällt etwa exponentiell ab, mit einer Länge von der
   Größenordnung des Abstands zwischen gebrochenen Bindungen am Weg (abgeschätzt, nicht gerechnet). Die
@@ -742,11 +748,10 @@ Summe positiver Terme: Auslöschung ist unmöglich. G(R) kann nur noch durch Lok
 Valenzbindungskristall); in einer resonierenden Singulett-Flüssigkeit kondensieren die Bosonen, G(R) → konstant.
 Die Eichung macht daraus ein d-Wellen-Kondensat.
 
-**Folgerungen, die zur Physik der Kuprate passen:** Bei kleiner Dotierung bleibt der Hintergrund Néel-artig, und
-in einem Quanten-Antiferromagneten trägt eine Nachbarbindung zu gut einem Viertel parallele Spins
-(1/2 + (2/3)⟨S·S⟩ ≈ 0,28 mit ⟨S·S⟩ ≈ −0,335, aus dem Gedächtnis). Die Wenden sind dann inkohärent, also gibt es
-kein ODLRO. Erst wenn genug Paare da sind, um den Hintergrund in Singuletts zu drücken, wird die Paarbewegung
-kohärent: Supraleitung erst ab einer Mindestdotierung, d-Welle, Paare als Träger.
+**Grenzfall, keine Bedingung (nach 7.11):** In einem Quanten-Antiferromagneten trägt eine Nachbarbindung zu
+gut einem Viertel parallele Spins. Das macht die Wenden nicht inkohärent, sondern nur schwächer: Nach 7.11 bleibt
+der Überschuss der antiparallelen Komponenten, und der ist positiv. Das Singulett ist der Grenzfall mit
+größtem Überschuss (1); ein Singulett-Hintergrund ist günstig, aber nicht nötig.
 
 **Was davon geprüft ist und was nicht.** Geprüft: Vorzeichenregel (7.1), Pivot/Domino unfrustriert in der
 d-Wellen-Eichung (7.3, 7.9), beide Orientierungen der bewegten Bindung geben dasselbe Vorzeichen (7.9), Paartausch
@@ -756,6 +761,44 @@ vorzeichenfrei bleibt, und der Schritt vom vorzeichenfreien Bosonenmodell zur Ko
 nicht: Es ist im Kern Andersons RVB-Idee (Singulett-Flüssigkeit, Dotierung → Supraleitung) bzw. das dotierte
 Dimermodell von Rokhsar und Kivelson (aus dem Gedächtnis). Neu ist hier nur, dass es aus der Vorzeichenregel
 und dem Reparatur-Bild folgt.
+
+### 7.11 Idee: Die Swaps summieren über Hintergründe, nur der konstruktive Überschuss bleibt
+
+Vorschlag aus der Diskussion. Er ersetzt die Folgerung „Abfall bei aufgeweichtem Néel“ aus 7.9 und macht 7.10
+zum Grenzfall.
+
+1. **Swaps machen Wege, keine Vorzeichen.** In der Form (−1)^(n↑) · sgn(π_Loch) tragen Vertauschungen kein
+   Vorzeichen. Sie erzeugen Alternativen: Sie ändern, welcher Spin dort sitzt, wo ein Loch vorbeikommt, und damit
+   n↑. Zu jedem Lochweg gibt es viele Varianten mit Vertauschungen vorher, dazwischen, nachher, daneben.
+2. **Eingefroren gegen dynamisch.** 7.9 hat Fluktuationen als eingefroren behandelt: Jeder Weg sieht einen festen
+   Hintergrund, sein Vorzeichen ist zufällig, Wege verschiedener Geometrie heben sich auf, und G(R) fällt ab wie
+   bei einem Teilchen im Zufallsfluss. Im Quanten-Grundzustand ist nichts eingefroren. Für jeden Elementarschritt
+   des Paares werden alle Varianten kohärent summiert. Die destruktiven ziehen von den konstruktiven ab; übrig
+   bleibt eine Nettoamplitude mit festem Vorzeichen. Weil der Hintergrund überall derselbe ist, gilt sie für jeden
+   gleichartigen Schritt. Über große Entfernungen bleibt ein Hüpfproblem mit festen Vorzeichen (das Paar mit
+   seiner Spinwolke als Quasiteilchen, 7.9: eindeutiges Bandmaximum bei K = 0). Die Auslöschung macht das Paar
+   schwerer, erzeugt aber keinen Abfall mit R.
+3. **Größe des Überschusses.**
+   - Raupe: alle Varianten konstruktiv (7.6), Faktor 1.
+   - J-Wende: Anteil der antiparallelen minus Anteil der parallelen Komponenten der bewegten Bindung,
+     −4⟨S^z S^z⟩ = −(4/3)⟨S·S⟩. Das ergibt 0,47 im 4×4-Grundzustand ohne Loch (⟨S·S⟩ = −0,351) und 0,36 an
+     einem Loch (−0,270 bei J/t = 0,4, beides 6.2). Der Überschuss ist positiv, solange die Bindungen
+     antiferromagnetisch korreliert sind.
+   - Singulett: 1, der Grenzfall aus 7.10.
+4. **Warum Paare.** Ein einzelnes Loch bewegt jeden Spin einmal. Varianten, die seinen Weg berühren, sind
+   destruktiv (Beispiel UU mit vorherigem Umklappen, 7.6). Übrig bleiben J-Schritte (7.4) mit einem Überschuss
+   wie bei der Wende, also Bewegung nur mit J. Das Paar behält mit der Raupe Bewegung ohne J, bei der alle
+   Varianten konstruktiv sind. Das ist ein kinetischer Grund für die Bindung (passt zu 6.1: mit Vorzeichen
+   gebunden, ohne nicht).
+5. **ODLRO.** Nettoamplituden mit festem, überall gleichem Vorzeichen machen das Paar zu einem Quasiteilchen
+   mit Band. Paare sind Bosonen (Platztausch +1, 7.2). Ein dünnes Bose-Gas kondensiert, also G(R) → konstant.
+
+**Wann trotzdem Abfall:** eingefrorene Unordnung (Störstellen, eingefrorene Spins); verschwindender
+Überschuss (Bindungen ohne antiferromagnetische Korrelation, z. B. bei hoher Temperatur); Lokalisierung
+(flaches Band, Kristall); eine Spinwolke, die nicht gebunden bleibt (Quasiteilchengewicht null).
+
+**Offen:** ob die Spinwolke des Paares endlich bleibt (beim einzelnen Loch ist das als Spin-Polaron bekannt, aus
+dem Gedächtnis); die Wechselwirkung zwischen Paaren; der Vielteilchenschritt zur Kondensation.
 
 ## 8. Grenzen
 
