@@ -35,7 +35,7 @@ Kurzfassung:
 |---|---|---|
 | `zwei_loch.py` | Kernfunktionen: Wege, Sprung-Reihenfolgen, Reparatur-Strategien, Suche (baut auf `../tj_gui.py` auf) | – |
 | `tj_gui_2loch.py` | GUI: alles aus `tj_gui.py` plus zwei Leisten für zwei Löcher | `python tj_gui_2loch.py` |
-| `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse) | im Browser öffnen |
+| `tj_gui_web.html` | dieselben Funktionen als Webseite (JavaScript, für Touch bedienbar, z.B. auf dem iPad); Vorzeichen gegen `tj_gui.py` geprüft (400/400 Prozesse). Zusätzlich: zwei Bewegungen A und B merken, abspielen und vergleichen (relatives Vorzeichen, Regelprüfung); auf der veröffentlichten Seite speichert „Für Claude speichern“ den Vergleich im Datenspeicher des Artifacts (Sammlung `vergleiche`) | im Browser öffnen |
 | `experimente.py` | reproduziert die Tabellen aus Abschnitt 4 (Markdown-Ausgabe) | `python experimente.py` |
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |

@@ -114,6 +114,16 @@ input[type="text"] {
   min-height: 5.5em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
 }
 #out.busy { color: var(--muted); }
+input.plain, textarea.plain { text-transform: none; }
+textarea.plain {
+  font-family: var(--font-ui); font-size: 0.95rem; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100%; box-sizing: border-box; resize: vertical;
+}
+.slots { display: grid; gap: 4px; font-family: var(--font-data); font-size: 0.82rem; color: var(--muted); }
+.slots b { color: var(--fg); font-weight: 600; }
+.saved-list { display: grid; gap: 6px; }
+.saved-list button { text-align: left; width: 100%; }
+.saved-list .meta { font-family: var(--font-data); font-size: 0.8rem; color: var(--muted); }
 .thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .thumbs svg { width: 100%; aspect-ratio: 1; display: block; border-radius: 4px; border: 1px solid var(--line); cursor: pointer; }
 .thumbs .empty { aspect-ratio: 1; border: 1px dashed var(--line); border-radius: 4px; }
@@ -161,6 +171,31 @@ svg .lab { fill: var(--label); font-family: var(--font-ui); font-weight: 600; fo
   </section>
 
   <section class="panel" aria-label="Tests">
+    <fieldset>
+      <legend>Bewegungen vergleichen</legend>
+      <p class="hint">Eine Bewegung sind alle Schritte seit dem Start (seit „Neu“, einem geladenen Bild oder Beispiel).
+        Bewegung durch Tippen auf Bindungen ausführen und als A merken; mit „Alles zurück“ an den Start, die zweite
+        Bewegung ausführen und als B merken; dann vergleichen.</p>
+      <div class="fields">
+        <label for="in-name">Name der Bewegung<input type="text" class="plain" id="in-name" placeholder="z.B. UU mit Umklappen" autocomplete="off"></label>
+      </div>
+      <div class="row">
+        <button id="b-mA">Als A merken</button>
+        <button id="b-mB">Als B merken</button>
+        <button id="b-cmp" class="primary">Vergleichen</button>
+        <button id="b-lA">A laden</button>
+        <button id="b-lB">B laden</button>
+      </div>
+      <div class="slots" id="slots"></div>
+      <label for="in-note" class="hint">Notiz für Claude (was du zeigen oder fragen willst)</label>
+      <textarea id="in-note" class="plain" rows="2"></textarea>
+      <div class="row">
+        <button id="b-claude">Für Claude speichern</button>
+        <span class="hint" id="db-state">Speicher wird verbunden …</span>
+      </div>
+      <div class="saved-list" id="saved-cmp"></div>
+    </fieldset>
+
     <fieldset>
       <legend>Zwei Löcher</legend>
       <div class="fields">
@@ -530,19 +565,24 @@ const S = {
   conf: [], sign: 1, trail: [], labels: new Map(), history: [], redo: [], wrong: null, hover: null,
   saved: [], testHead: "", testResults: [], deviants: [], devIndex: 0, found: [], foundIndex: { 1: 0, "-1": 0 },
   twoResults: [], variantIndex: 0, busy: false, playTimer: null,
+  steps: [], A: null, B: null,
 };
 const $ = id => document.getElementById(id);
 const board = $("board"), out = $("out");
 const fmt = s => (s > 0 ? "+1" : "−1");
 
-function snapshot() { return { conf: S.conf.slice(), sign: S.sign, trail: S.trail.slice(), labels: new Map(S.labels) }; }
+function snapshot() {
+  return { conf: S.conf.slice(), sign: S.sign, trail: S.trail.slice(), labels: new Map(S.labels), steps: S.steps.map(s => s.slice()) };
+}
 function restore(st, redraw = true) {
   S.conf = st.conf.slice(); S.sign = st.sign; S.trail = st.trail.slice(); S.labels = new Map(st.labels); S.wrong = null;
+  S.steps = (st.steps || []).map(s => s.slice());
   if (redraw) draw();
 }
 function pushHistory() { S.history.push(snapshot()); S.redo = []; S.wrong = null; }
 function clickSwap(a, b, redraw = true) {
   pushHistory();
+  S.steps.push([a, b]);
   if (S.conf[a] === HOLE || S.conf[b] === HOLE) S.trail.push([a, b]);
   S.sign *= swapSign(S.conf, a, b);
   [S.conf[a], S.conf[b]] = [S.conf[b], S.conf[a]];
@@ -558,6 +598,7 @@ function undoAll(redraw = true) { while (S.history.length) undo(false); if (redr
 function newStart() {
   stopPlay();
   S.conf = neelRandomStart(); S.sign = 1; S.trail = []; S.labels = new Map(); S.history = []; S.redo = []; S.wrong = null;
+  S.steps = [];
   draw();
 }
 
@@ -629,7 +670,7 @@ const tick = () => new Promise(r => setTimeout(r, 0));
 function setBusy(on) {
   S.busy = on;
   document.querySelectorAll(".panel button, .board-col button").forEach(b => { b.disabled = on; });
-  if (!on) draw();
+  if (!on) { draw(); $("b-claude").disabled = !DB; }
 }
 async function guarded(fn) {
   if (S.busy) return;
@@ -641,7 +682,7 @@ async function guarded(fn) {
 function loadResult(r, label) {
   stopPlay();
   S.conf = r.start.slice(); S.sign = 1; S.trail = []; S.labels = new Map(r.labels || []);
-  S.history = []; S.redo = []; S.wrong = null;
+  S.history = []; S.redo = []; S.wrong = null; S.steps = [];
   for (const [a, b] of r.steps) clickSwap(a, b, false);
   undoAll(false);
   draw();
@@ -802,9 +843,183 @@ async function crossingExample() {
   loadVariant();
 }
 
+// ---------- Bewegungen vergleichen ----------
+const coord = s => `(${Math.floor(s / L)},${s % L})`;
+const spinName = v => (v === UP ? "↑" : v === DN ? "↓" : "Loch");
+function permSign(p) {
+  let sg = 1;
+  const seen = new Set();
+  for (let i = 0; i < p.length; i++) {
+    let j = i, len = 0;
+    while (!seen.has(j)) { seen.add(j); j = p[j]; len++; }
+    if (len && len % 2 === 0) sg = -sg;
+  }
+  return sg;
+}
+function analyse(name, start, steps) {
+  const c = start.slice(), ident = start.map((_, i) => i), text = [];
+  let sign = 1, m = 0, s = 0, nUp = 0;
+  for (const [a, b] of steps) {
+    sign *= swapSign(c, a, b);
+    if (c[a] === HOLE || c[b] === HOLE) {
+      const [hole, spin] = c[a] === HOLE ? [a, b] : [b, a];
+      m++;
+      if (c[spin] === UP) nUp++;
+      text.push(`Loch ${coord(hole)} → ${coord(spin)} (bewegt ${spinName(c[spin])})`);
+    } else {
+      s++;
+      text.push(`Vertauschung ${coord(a)} ${spinName(c[a])} ↔ ${coord(b)} ${spinName(c[b])}`);
+    }
+    [c[a], c[b]] = [c[b], c[a]];
+    [ident[a], ident[b]] = [ident[b], ident[a]];
+  }
+  const hs = [], he = [];
+  for (let i = 0; i < N; i++) { if (start[i] === HOLE) hs.push(i); if (c[i] === HOLE) he.push(i); }
+  const perm = hs.map(h => he.indexOf(ident.indexOf(h)));
+  return { name, start: start.slice(), steps: steps.map(x => x.slice()), end: c, sign, m, s, nUp,
+           permSign: permSign(perm), neelEnd: neelViolations(c).size === 0, text };
+}
+function currentMovement(name) {
+  const start = S.history.length ? S.history[0].conf : S.conf;
+  return analyse(name, start, S.steps);
+}
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const counts = mv => `${plural(mv.steps.length, "Schritt", "Schritte")} (${plural(mv.m, "Sprung", "Sprünge")}, ${plural(mv.s, "Vertauschung", "Vertauschungen")})`;
+const sameConf = (x, y) => x.length === y.length && x.every((v, i) => v === y[i]);
+function describeMv(tag, mv) {
+  return `${tag} „${mv.name || "ohne Namen"}“: ${counts(mv)}, ` +
+    `n↑ = ${mv.nUp}, Löcher vertauscht: ${mv.permSign < 0 ? "ja" : "nein"}, Ende Néel: ${mv.neelEnd ? "ja" : "nein"}, ` +
+    `Vorzeichen ${fmt(mv.sign)}`;
+}
+function compareText(A, B) {
+  const lines = [];
+  if (A) lines.push(describeMv("A", A));
+  if (B) lines.push(describeMv("B", B));
+  if (!A || !B) return lines.join("\n");
+  const ss = sameConf(A.start, B.start), se = sameConf(A.end, B.end);
+  lines.push(`Gleicher Start: ${ss ? "ja" : "nein"}, gleiches Ende: ${se ? "ja" : "nein"}`);
+  if (ss && se) {
+    const rel = A.sign * B.sign, ps = A.permSign * B.permSign;
+    const ruleS = (-1) ** (A.s + B.s) * ps, ruleUp = (-1) ** (A.nUp + B.nUp) * ps;
+    lines.push(`Relatives Vorzeichen A·B = ${fmt(rel)}: ${rel > 0 ? "gleich" : "ENTGEGENGESETZT"} (konventionsfrei, weil Start und Ende gleich sind)`);
+    lines.push(`Regel: (−1)^(s_A+s_B) · sgn(π_A)·sgn(π_B) = (−1)^${A.s + B.s} · ${fmt(ps)} = ${fmt(ruleS)} ${ruleS === rel ? "✓" : "✗"}`);
+    lines.push(`Phase-String-Form: (−1)^(n↑_A+n↑_B) · sgn(π_A)·sgn(π_B) = (−1)^${A.nUp + B.nUp} · ${fmt(ps)} = ${fmt(ruleUp)} ${ruleUp === rel ? "✓" : "✗"}`);
+  } else if (ss) {
+    lines.push("Verschiedenes Ende: Das relative Vorzeichen hängt von der Fermion-Ordnung ab und ist so nicht aussagekräftig. Für einen Vergleich müssen beide Bewegungen im selben Zustand enden (z.B. beide bis Néel reparieren).");
+  } else {
+    lines.push("Verschiedener Start: nicht vergleichbar. Beide Bewegungen müssen vom selben Startzustand ausgehen (nach A mit „Alles zurück“ an den Start).");
+  }
+  return lines.join("\n");
+}
+function drawSlots() {
+  const row = (tag, mv) => mv
+    ? `<span><b>${tag}</b> ${mv.name ? mv.name + " · " : ""}${counts(mv)}, Vorzeichen ${fmt(mv.sign)}</span>`
+    : `<span><b>${tag}</b> noch nicht gemerkt</span>`;
+  $("slots").innerHTML = row("A", S.A) + row("B", S.B);
+}
+function storeSlots() {
+  try { localStorage.setItem("tj-bewegungen", JSON.stringify({ A: S.A, B: S.B })); } catch (e) { /* ohne Speicher weiter */ }
+}
+function loadSlots() {
+  try {
+    const d = JSON.parse(localStorage.getItem("tj-bewegungen") || "null");
+    if (d) { S.A = d.A; S.B = d.B; }
+  } catch (e) { /* ohne Speicher weiter */ }
+}
+function remember(tag) {
+  if (!S.steps.length) { setOut("Noch keine Schritte seit dem Start: erst Bindungen antippen."); return; }
+  S[tag] = currentMovement($("in-name").value.trim());
+  storeSlots(); drawSlots();
+  setOut(compareText(S.A, S.B) + (tag === "A" && !S.B ? "\n\nJetzt mit „Alles zurück“ an den Start und die zweite Bewegung als B merken." : ""));
+}
+function loadMovement(tag) {
+  const mv = S[tag];
+  if (!mv) { setOut(`${tag} ist noch nicht gemerkt.`); return; }
+  stopPlay();
+  S.conf = mv.start.slice(); S.sign = 1; S.trail = []; S.labels = new Map();
+  S.history = []; S.redo = []; S.wrong = null; S.steps = [];
+  for (const [a, b] of mv.steps) clickSwap(a, b, false);
+  undoAll(false);
+  draw();
+  setOut(describeMv(tag, mv) + "\n„Vor“ oder „Abspielen“ spielt die Bewegung ab.\n\n" + mv.text.join("\n"));
+}
+const toRows = conf => Array.from({ length: L }, (_, x) => conf.slice(x * L, x * L + L).map(v => (v === UP ? "u" : v === DN ? "d" : ".")).join(""));
+const fromRows = rows => rows.join("").split("").map(ch => (ch === "u" ? UP : ch === "d" ? DN : HOLE));
+function pack(mv) {
+  if (!mv) return null;
+  return { name: mv.name, start: toRows(mv.start), ende: toRows(mv.end), schritte: mv.steps, beschreibung: mv.text,
+           vorzeichen: mv.sign, spruenge: mv.m, vertauschungen: mv.s, n_up: mv.nUp,
+           loecher_vertauscht: mv.permSign < 0, ende_neel: mv.neelEnd };
+}
+const unpack = p => (p ? analyse(p.name || "", fromRows(p.start), p.schritte || []) : null);
+
+let DB = null;
+async function saveForClaude() {
+  if (!DB) { setOut("Speichern für Claude geht nur auf der veröffentlichten Seite in claude.ai (angemeldet)."); return; }
+  if (!S.A && !S.B) { setOut("Erst eine Bewegung als A (und B) merken."); return; }
+  $("b-claude").disabled = true;
+  try {
+    const all = await DB.collection("vergleiche").get();
+    const nr = all.docs.reduce((mx, d) => Math.max(mx, Number((d.data() || {}).nr) || 0), 0) + 1;
+    await DB.collection("vergleiche").doc("v" + nr).set({
+      nr, zeit: new Date().toISOString(), notiz: $("in-note").value.trim(),
+      A: pack(S.A), B: pack(S.B), vergleich: compareText(S.A, S.B),
+      hinweis: "Plätze als (Zeile,Spalte), Index = Zeile*8 + Spalte; u = up, d = down, . = Loch; Vorzeichen in NetKet-Ordnung wie tj_gui.py",
+    });
+    setOut(compareText(S.A, S.B) + `\n\nGespeichert als Vergleich Nr. ${nr}. Sag Claude zum Beispiel: „Lies Vergleich ${nr}“.`);
+  } catch (e) {
+    const code = e && e.code;
+    setOut(code === "invalid_argument"
+      ? "Speichern abgelehnt: Mit deiner Freigabestufe darfst du hier nichts speichern."
+      : code === "quota_exceeded" ? "Speicher voll: Bitte ältere Vergleiche löschen lassen."
+      : "Speichern hat nicht geklappt (" + (code || "unbekannter Fehler") + "). Bitte gleich noch einmal versuchen.");
+  } finally {
+    $("b-claude").disabled = false;
+  }
+}
+function renderSavedList(snap) {
+  const docs = snap.docs.map(d => d.data()).filter(Boolean);
+  const box = $("saved-cmp");
+  box.textContent = "";
+  for (const d of docs) {
+    const b = document.createElement("button");
+    const when = d.zeit ? new Date(d.zeit).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" }) : "";
+    const title = document.createElement("div");
+    title.textContent = `Vergleich ${d.nr}: ${(d.A && d.A.name) || "A"} / ${(d.B && d.B.name) || "B"}`;
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = when + (d.notiz ? " · " + d.notiz : "");
+    b.append(title, meta);
+    b.addEventListener("click", () => {
+      S.A = unpack(d.A); S.B = unpack(d.B);
+      storeSlots(); drawSlots();
+      setOut(`Vergleich ${d.nr} geladen.\n\n` + compareText(S.A, S.B));
+    });
+    box.append(b);
+  }
+}
+async function connectDb() {
+  try {
+    DB = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  } catch (e) { DB = null; }
+  $("db-state").textContent = DB ? "Claude kann gespeicherte Vergleiche lesen." : "Nur auf der veröffentlichten Seite in claude.ai verfügbar.";
+  $("b-claude").disabled = !DB;
+  if (DB) {
+    DB.collection("vergleiche").orderBy("nr", "desc").limit(20).onSnapshot(renderSavedList, () => {
+      $("db-state").textContent = "Liste der gespeicherten Vergleiche ist gerade nicht erreichbar.";
+    });
+  }
+}
+
 // ---------- Verdrahtung ----------
 const on = (id, fn) => $(id).addEventListener("click", fn);
 on("b-new", () => { if (!S.busy) newStart(); });
+on("b-mA", () => remember("A"));
+on("b-mB", () => remember("B"));
+on("b-lA", () => loadMovement("A"));
+on("b-lB", () => loadMovement("B"));
+on("b-cmp", () => setOut(S.A || S.B ? compareText(S.A, S.B) : "Erst Bewegungen als A und B merken."));
+on("b-claude", saveForClaude);
 on("b-undo", () => { stopPlay(); undo(); });
 on("b-redo", () => { stopPlay(); redo(); });
 on("b-undoall", () => { stopPlay(); undoAll(); });
@@ -832,11 +1047,11 @@ $("thumbs").addEventListener("click", e => {
   const st = S.saved[Number(svg.dataset.i)];
   stopPlay();
   S.conf = st.conf.slice(); S.sign = st.sign; S.trail = st.trail.slice(); S.labels = new Map();
-  S.history = []; S.redo = []; S.wrong = null;
+  S.history = []; S.redo = []; S.wrong = null; S.steps = [];
   draw();
 });
 document.addEventListener("keydown", e => {
-  if (e.target.tagName === "INPUT") return;
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
   if (e.key === "s") $("b-save").click();
   if (e.key === "ArrowRight") { stopPlay(); redo(); }
   if (e.key === "ArrowLeft") { stopPlay(); undo(); }
@@ -845,6 +1060,9 @@ document.addEventListener("keydown", e => {
 // Start: Kreuzungsbeispiel geladen, damit gleich etwas zu sehen ist
 newStart();
 drawThumbs();
+loadSlots();
+drawSlots();
+connectDb();
 setOut("Lädt das Kreuzungsbeispiel …", true);
 guarded(crossingExample);
 </script>
