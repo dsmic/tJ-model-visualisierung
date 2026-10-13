@@ -228,6 +228,11 @@ def section_pairs():
         deg = int(np.sum(np.abs(wm - wm[-1]) < 1e-8))
         print(f"| {name} | {wm[-1]:.3f} | {lam_max(np.abs(M)):.3f} | {wm[-1] / lam_max(np.abs(M)):.3f} | {deg} |")
     print()
+    A = np.array([[1.0 if i != j and set(BONDS[i]) & set(BONDS[j]) else 0.0 for j in range(nb)] for i in range(nb)])
+    same = np.array_equal(Mcat != 0, A != 0) and np.allclose(np.linalg.eigvalsh(Mcat), np.linalg.eigvalsh(-A))
+    print(f"- Raupe = Teilchen mit umgekehrtem Hüpfvorzeichen auf dem Liniengraphen (Bindungen als Knoten, verbunden "
+          f"bei gemeinsamem Platz): gleicher Träger und gleiches Spektrum wie −A(Liniengraph): {'ja' if same else 'nein'}. "
+          f"Flaches Band mit Vielfachheit |Bindungen| − |Plätze| + 1 = {nb} − {T.N} + 1 = {nb - T.N + 1}.")
     G = D[:, None] * Mcat * D[None, :]
     straight = np.array([[horiz[i] == horiz[j] for j in range(nb)] for i in range(nb)])
     nz = Mcat != 0

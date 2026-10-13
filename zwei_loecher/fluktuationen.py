@@ -267,6 +267,23 @@ def main():
             out.append(ratio(M))
         print(f"| {name} | {out[0][0]:.3f} | {out[1][0]:.3f} | {out[0][1]} |")
     print()
+    print("Raupe allein und Raupe mit freien J-Fluktuationen (Prozesse ohne Vertauschung oder ohne Lochsprung):\n")
+    print("| Prozesse | Gewicht Vertauschung | Verhältnis | Entartung | Anteil des Grundzustands mit Fluktuation |")
+    print("|---|---|---|---|---|")
+    for ws in (1.0, 0.3, 0.1):
+        for name, keep, sub in (("Raupe, sauberes Néel", lambda i, j, m, s: s == 0, clean),
+                                ("Raupe + freie J-Fluktuationen", lambda i, j, m, s: s == 0 or m == 0, None)):
+            M = matrix(keep, ws)
+            idx = np.arange(n) if sub is None else sub
+            M = M[np.ix_(idx, idx)]
+            used = np.abs(M).sum(axis=0) > 0
+            M, idx = M[np.ix_(used, used)], idx[used]
+            w, V = np.linalg.eigh(M)
+            deg = int(np.sum(np.abs(w - w[-1]) < 1e-8))
+            frac = float(np.sum(V[:, -1] ** 2 * (kinds[idx] == 1))) if deg == 1 else float("nan")
+            print(f"| {name} | {ws} | {w[-1] / np.linalg.eigvalsh(np.abs(M))[-1]:.3f} | {deg} | "
+                  f"{'–' if np.isnan(frac) or sub is not None else f'{frac:.2f}'} |")
+    print()
     amp = {}
     for (j, i), lst in procs.items():
         a = sum(sg for sg, m, s in lst if s >= 1)

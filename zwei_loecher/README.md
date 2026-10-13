@@ -23,7 +23,8 @@ Kurzfassung:
   J-Fluktuationen (Vertauschungen, die keine Reparaturen sind), kommt auch für Paare Frustration zurück
   (Verhältnis 0,92 statt 1), und zwar dort, wo das Paar eine Fluktuation in seiner Nähe umordnet. Die Raupe
   ist dagegen immun gegen Fluktuationen auf ihrem Weg (der Schwanz bewegt jeden Spin ein zweites Mal), ein
-  einzelnes Loch nicht.
+  einzelnes Loch nicht. Mit freien Fluktuationen in seiner Nähe wird das Raupenpaar fast unfrustriert und
+  bindet eine Fluktuation (7.7): ein Kandidat für den ODLRO-Mechanismus bei aufgeweichtem Néel.
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -371,6 +372,12 @@ Reparatur, s = 1). Alle Prozesse mit Gewicht 1.
 | nur Pivot + Domino | 5,719 | 5,719 | **1,000** | 1 |
 
 - Die reine Raupe ist stark frustriert, das Paar ist durch Interferenz lokalisiert (Wenden kosten −1).
+  Genauer: Kehrt die Raupe zur selben Bindung zurück, sind die Löcher genau dann vertauscht, wenn die Zahl
+  der Schritte ungerade ist (jeder Schritt wechselt das Untergitter beider Löcher). Die Raupe ist damit ein
+  Teilchen mit umgekehrtem Hüpfvorzeichen auf dem Liniengraphen des Quadratgitters (Bindungen als Knoten,
+  verbunden bei gemeinsamem Platz): gleiches Spektrum wie −A(Liniengraph), geprüft. Der Liniengraph besteht
+  aus Dreiecken (drei Bindungen an einem Platz); daher das flache Band mit Vielfachheit
+  |Bindungen| − |Plätze| + 1 = 112 − 64 + 1 = 49, wie beim Kagome-Gitter.
 - Pivot und Domino sind **unfrustriert**. Die Umeichung, die alle Einträge positiv macht, ist genau das
   d-Wellen-Muster: Vorzeichen von Δ(b)|Néel⟩ × (+1 waagerecht, −1 senkrecht), mit
   Δ(i,j) = c_i↑ c_j↓ − c_i↓ c_j↑. Ein Pivot hat gegenüber der Raupe mit Wende zum selben Ziel eine Reparatur
@@ -483,11 +490,51 @@ geheilt (Breitensuche); angegeben sind alle dabei erreichbaren Vorzeichen:
 |---|---|---|
 | Raupe | nein | ja |
 | Pivot, Domino | ja (d-Wellen-Eichung) | nein |
-- **Deutung (Hypothese):** Das Paar bleibt kohärent, solange Spinfluktuationen in seiner Nähe selten sind
+- **Deutung (Hypothese, siehe aber 7.7):** Das Paar bleibt kohärent, solange Spinfluktuationen in seiner Nähe selten sind
   oder als feste Singulett-Paare mitlaufen, oder solange es sich überwiegend als Raupe bewegt; viele
   bewegliche Fluktuationen um ein Paar, das sich über Pivot und Domino bewegt, frustrieren es. Das passt zum Bild der Phase-String-Theorie, nach dem Supraleitung kurzreichweitige, gepaarte
   Spinkorrelationen braucht (aus dem Gedächtnis). Geprüft ist hier nur der Fall einer einzelnen Fluktuation.
 
+
+### 7.7 Mechanismus bei aufgeweichtem Néel: Raupenpaar mit gebundener Fluktuation
+
+Ausgangspunkt: Schon bei einem einzelnen Loch ändern Vertauschungen, die den Weg berühren, das Vorzeichen
+(7.6, und in der Web-GUI gespeicherte Vergleiche: Weg UU bzw. DD mit vorherigem Umklappen und Zurückklappen,
+jeweils entgegengesetztes Vorzeichen). Bei aufgeweichtem Néel sind für ein einzelnes Loch also praktisch
+immer beide Vorzeichen erreichbar. Gesucht ist ein Mechanismus, der trotzdem Paarkohärenz (ODLRO) erlaubt.
+
+1. **Die Raupe ist immun gegen freie Fluktuationen.** Der Schwanz bewegt jeden Spin, den der Kopf verschoben
+   hat, ein zweites Mal; n↑ ist immer gerade, die Phase-Strings der beiden Löcher heben sich auf. Fluktuationen
+   auf dem Weg ändern das Vorzeichen der Raupe nicht (Tabelle in 7.6). Ein Raupenpaar hat also, anders als ein
+   einzelnes Loch, in jedem Hintergrund ein festes Vorzeichen.
+2. **Ihr einziges Vorzeichen ist der Lochaustausch**, und der macht die reine Raupe frustriert (Liniengraph,
+   flaches Band, 7.3).
+3. **Freie J-Fluktuationen in der Nähe des Paares heben das fast vollständig auf.** Vollständige Aufzählung wie
+   in 7.6 (6×6-Fenster, höchstens eine Fluktuation), Prozesse ohne Vertauschung (Raupe, auch durch eine
+   Fluktuation hindurch oder sie schluckend) und Prozesse ohne Lochsprung (Fluktuation entsteht, wandert,
+   vergeht):
+
+| Prozesse | Gewicht Vertauschung | Verhältnis | Entartung | Anteil des Grundzustands mit Fluktuation |
+|---|---|---|---|---|
+| Raupe, sauberes Néel | beliebig | 0,708 | 9 | – |
+| Raupe + freie J-Fluktuationen | 1 | **0,993** | 1 | 72 % |
+| Raupe + freie J-Fluktuationen | 0,3 | **0,901** | 1 | 68 % |
+| Raupe + freie J-Fluktuationen | 0,1 | **0,882** | 1 | 55 % |
+
+   (In diesem Fenster zählen auch Hin-und-zurück-Sprünge als Diagonalbeiträge; deshalb ist die saubere Raupe
+   hier 0,708 statt 0,351 wie in 7.3.) Mit allen Prozessen, also auch Pivot und Domino, ist es wieder etwas
+   frustrierter (0,917 bzw. 0,867, Tabelle in 7.6).
+
+**Mechanismus (Hypothese, gestützt auf diese Zahlen):** Das kohärente Objekt ist ein Raupenpaar, das eine
+Spinfluktuation an sich bindet. Freie Fluktuationen auf seinem Weg ändern sein Vorzeichen nicht (1.), und die
+gebundene Fluktuation liefert beim Wenden das Vorzeichen, das den Lochaustausch ausgleicht (3.). Was beim
+einzelnen Loch die Vorzeichen zufällig macht, wird beim Paar zur Ressource. Physikalisch ist das ein
+Lochpaar mit Spinwolke (einem umgeklappten Paar, also einer Singulett- bzw. Triplett-artigen Anregung), passend
+zum Bild des Cooper-Paares im RVB-Bild.
+
+Offen bzw. nicht geprüft: welche Paarsymmetrie dieser Zustand hat (Überlapp mit der s-Welle 0, mit einer
+gleichförmigen d-Welle nur 0,05 bis 0,37), wie es mit mehreren Fluktuationen und realistischen Energien
+aussieht, und ob der Tausch zweier solcher Paare +1 ergibt.
 
 ## 8. Grenzen
 
