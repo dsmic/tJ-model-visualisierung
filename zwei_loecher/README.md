@@ -46,6 +46,11 @@ Kurzfassung:
   Löcher ist daher das Produkt ihrer Einzelvorzeichen (1563 von 1563), deckungsgleiche Wege geben immer +1. Die
   Amplitude für Trennen und Wiedertreffen ist G(R)² ≥ 0: Die Löcher müssen nicht zusammenbleiben (Cooper-Paarung
   im Ortsraum).
+- **Viele Löcher (7.13):** Mit J-Schritten und Raupenschritten gilt für beliebig viele Löcher
+  Vorzeichen = (−1)^Schritte · sgn(π der ↑-Lücken) · sgn(π der ↓-Lücken) (1500 von 1500). Die Löcher sind dann zwei
+  Sorten gewöhnlicher Fermionen ohne Vorzeichen zwischen den Sorten und ohne Phase-String; der Raupenschritt ist
+  korreliertes Hüpfen einer Sorte über die andere. Daraus folgt das BCS-Bild mit überlappenden Paaren, und die
+  Lage der Fermi-Fläche lässt nur die d-Welle zu (Argument).
 - **Exakte Diagonalisierung (4×4, periodisch):** Mit den Vorzeichen sind zwei Löcher gebunden
   (E_b = −0,35 t bei J/t = 0,4), in der vorzeichenfreien Version |H| nicht (+0,19 t). Die Vorzeichen
   erzeugen außerdem eine starke Verschränkung zwischen Lochpositionen und Spins (Entropie ≈ 3 statt
@@ -62,7 +67,7 @@ Kurzfassung:
 | `kohaerenz.py` | Regel für geschlossene Prozesse, Paar- und Einzelloch-Bewegung, Frustration (Abschnitt 7, etwa 20 s) | `python kohaerenz.py` |
 | `fluktuationen2.py` | wie `fluktuationen.py`, aber bis zu zwei Fluktuationen, mit Gegenprobe (Abschnitt 7.8, etwa 6 min auf 4 Kernen; numpy, scipy) | `python fluktuationen2.py` |
 | `beweglichkeit.py` | J-Wende über intakte und gebrochene Bindungen; Bandstruktur des Paares auf dem 12×12-Torus (Bloch-Blöcke mit Verschiebungsvorzeichen), sauber und mit bis zu zwei Fluktuationen (Abschnitt 7.9, etwa 4 min auf 4 Kernen; numpy, scipy; `--pruefen` vergleicht auf kleinen Tori mit der vollen Prozessmatrix) | `python beweglichkeit.py` |
-| `partner.py` | zwei getrennt laufende Löcher (↑- und ↓-Lücke): Vorzeichen = Produkt der Einzelvorzeichen (Abschnitt 7.12, wenige Sekunden) | `python partner.py` |
+| `partner.py` | zwei getrennt laufende Löcher: Vorzeichen = Produkt der Einzelvorzeichen (7.12); viele Löcher als zwei Sorten Fermionen (7.13); wenige Sekunden | `python partner.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
@@ -845,6 +850,51 @@ trennen und in Phase wieder verbinden.
    Fluktuation, die nur den Weg des einen Partners berührt. Das wäre das Gegenstück zu magnetischen Störstellen
    bei Abrikosov–Gor'kov. Nicht geprüft.
 
+### 7.13 Viele Löcher: zwei Sorten Fermionen (`partner.py`)
+
+7.12 behandelt zwei Löcher; ODLRO ist eine Vielteilchenfrage.
+
+1. **Test.** Drei ↑-Lücken (auf A) und drei ↓-Lücken (auf B) auf dem 10×10-Torus, teils als Nachbarpaare, teils
+   einzeln. Zufällige Folgen aus J-Schritten und Raupenschritten, danach zurück auf dieselben Plätze; Lücken
+   derselben Sorte dürfen dabei die Plätze tauschen (Partnertausch). In dieser Sprache ist ein **Raupenschritt**
+   eine Lücke, die über eine benachbarte Lücke der anderen Sorte hinwegspringt: zwei Sprünge, kein J. Ergebnis in
+   1500 von 1500 Prozessen:
+
+       Vorzeichen = (−1)^(Zahl der Schritte) · sgn(π der ↑-Lücken) · sgn(π der ↓-Lücken)
+
+   642 davon mit Platztausch innerhalb einer Sorte; 25 416 J-Schritte und 3163 Raupenschritte. Falsche Regeln
+   treffen nur in gut der Hälfte der Fälle: ohne (−1)^Schritte 789, ohne Permutation 858, nur J-Schritte gezählt 833.
+2. **Bedeutung.** Mit diesen Schritten sind die Löcher zwei Sorten gewöhnlicher Fermionen:
+   - innerhalb einer Sorte fermionisch (Platztausch −1);
+   - zwischen den Sorten kein Vorzeichen;
+   - kein Phase-String vom Hintergrund;
+   - jeder Schritt mit festem Hüpfvorzeichen.
+
+   Néel und Reparaturen verschwinden aus der Vorzeichenbuchhaltung. Übrig bleibt ein Zweisortenproblem:
+   - Jede Sorte hüpft auf ihrem Untergitter (J-Schritte, diagonal und gerade um zwei Plätze). Das ergibt das Band
+     ∝ (cos kₓ + cos k_y)² mit Minimum auf der Linie |kₓ| + |k_y| = π (7.4).
+   - Der Raupenschritt ist korreliertes Hüpfen über die andere Sorte hinweg, ohne J. Er wirkt nur, wenn eine ↑- und
+     eine ↓-Lücke benachbart sind. Das ist Bewegungsenergie, die nur Nachbarpaare haben, also eine Anziehung. Dazu
+     kommt die Austausch-Anziehung: Benachbarte Löcher zerstören zusammen eine Bindung weniger.
+
+   Die Zwei-Loch-Regel aus 7.12 ist der Fall einer Lücke je Sorte.
+3. **ODLRO bei endlicher Dotierung (Argument).** Jede Sorte füllt einen Fermi-See im selben Band. Gepaart werden
+   eine ↑-Lücke bei k und eine ↓-Lücke bei −k, die dieselbe Energie haben. Der Paarkanal ist nie destruktiv (7.12:
+   G² ≥ 0; im Impulsraum divergiert die Paarsuszeptibilität logarithmisch). Darum führt jede Anziehung zu
+   Cooper-Paaren und zu einem BCS-Zustand mit ODLRO. Die Paare überlappen, die Partner wechseln ständig; der
+   Platztausch innerhalb einer Sorte (−1) ist die Antisymmetrie des BCS-Zustands. Kein Loch muss bei einem
+   bestimmten Partner bleiben.
+4. **Paarsymmetrie (Argument).** Die Anziehung wirkt auf Nachbarbindungen mit einer A- und einer B-Lücke. Für sie
+   gibt es den erweiterten s-Kanal (cos kₓ + cos k_y) und den d-Kanal (cos kₓ − cos k_y). Die Fermi-Fläche liegt
+   nahe der Linie |kₓ| + |k_y| = π, und dort ist cos kₓ + cos k_y = 0. Der s-Kanal hat an der Fermi-Fläche also
+   kein Gewicht; es bleibt die d-Welle. Das passt zu 7.3 (Überlapp mit der s-Welle 0).
+5. **Wo das Bild bricht.** Bei Schritten, die die Sorten mischen:
+   - Sprünge ohne sofortige Reparatur, deren Spur die andere Sorte kreuzt (4.1);
+   - Fluktuationen im Hintergrund (kein exaktes Néel).
+
+   Dort entstehen Vorzeichen zwischen den Sorten (gegenseitige Statistik, Phase-String). Wie häufig das bei
+   endlicher Dotierung ist und ob es die Paarung zerstört, ist offen.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -907,6 +957,8 @@ heißt: begründet, aber nicht gerechnet.
 11. Zwei getrennt laufende Löcher (↑-Lücke und ↓-Lücke, sofort reparierte J-Schritte): Das Vorzeichen ist das
     Produkt der Einzelvorzeichen, bei deckungsgleichen Wegen immer +1, auch bei großem Abstand und gekreuzten
     Wegen (7.12).
+12. Viele Löcher mit J-Schritten und Raupenschritten: Vorzeichen = (−1)^Schritte · sgn(π der ↑-Lücken) ·
+    sgn(π der ↓-Lücken), also zwei Sorten Fermionen ohne Vorzeichen zwischen den Sorten (7.13).
 
 **Korrigiert**
 
@@ -918,9 +970,14 @@ heißt: begründet, aber nicht gerechnet.
   mit Fluktuationen, aber ohne J-Wenden, hat 0,92 und ist trotzdem fast unbeweglich.
 - 7.9: Der dort vorhergesagte Abfall mit der Entfernung gilt nur für eingefrorene Fluktuationen (7.11).
 
-**Idee für ODLRO (Argument, 7.12)**
+**Idee für ODLRO (Argument, 7.12 und 7.13)**
 
-Ein Paar muss nicht zusammenbleiben. Seine beiden Löcher sind verschiedene Sorten (↑-Lücke, ↓-Lücke). Jede
+Mit sofort reparierten J-Schritten und Raupenschritten sind die Löcher zwei Sorten gewöhnlicher Fermionen
+(↑-Lücken auf A, ↓-Lücken auf B): fermionisch innerhalb einer Sorte, kein Vorzeichen zwischen den Sorten, kein
+Phase-String. Der Raupenschritt ist korreliertes Hüpfen benachbarter ↑- und ↓-Lücken, also eine Anziehung. Bei
+endlicher Dotierung folgt das BCS-Bild: Cooper-Paare aus ↑-Lücke bei k und ↓-Lücke bei −k, überlappend, mit
+ständig wechselnden Partnern, und wegen der Fermi-Fläche nahe |kₓ| + |k_y| = π in der d-Welle. Für zwei Löcher
+heißt das: Ein Paar muss nicht zusammenbleiben. Seine beiden Löcher sind verschiedene Sorten (↑-Lücke, ↓-Lücke). Jede
 vertauscht nur Elektronen ihrer Sorte, und das Vorzeichen ist das Produkt zweier Faktoren, je einer pro Loch.
 Trennen sich die Löcher und treffen sich wieder, ist die Amplitude G(R)² und damit nie negativ: Die Phasen der
 Partner heben sich auf, wie bei Cooper-Paaren aus Zeitumkehr-Partnern. Partnertausch gibt das fermionische −1
@@ -936,7 +993,8 @@ Singulett-Hintergrund (7.10) ist der Grenzfall mit größtem Überschuss.
 
 **Offen**
 
-- ob das Produkt auch mit Fluktuationen im Hintergrund gilt und welche Fluktuationen Paare brechen (7.12, Punkt 7);
+- wie häufig Schritte sind, die die Sorten mischen (unreparierte Spuren, Fluktuationen), und ob sie die
+  Paarung zerstören (7.12, Punkt 7; 7.13, Punkt 5);
 - wie stark die Anziehung zwischen ↑- und ↓-Lücke ist und welche Paarsymmetrie daraus folgt;
 - der Vielteilchenschritt (Cooper-Paarung bzw. Kondensation);
 - ob sich destruktive Wege sogar paarweise exakt aufheben (stärkere Form der Idee);
