@@ -811,7 +811,7 @@ dem Gedächtnis); die Wechselwirkung zwischen Paaren; der Vielteilchenschritt zu
   Endlichkeitseffekte; die Bindungsenergien sind dort nur qualitativ aussagekräftig.
 - |H| entfernt *alle* Vorzeichen, auch die beim Austausch zweier Löcher, nicht nur die vom
   Reparatur-Zeitpunkt abhängigen. Der Vergleich zeigt die Wirkung der Vorzeichen insgesamt.
-- Abschnitt 7 nutzt effektive Modelle: fester Néel-Hintergrund (in 7.6 mit höchstens einer Fluktuation),
+- Abschnitt 7 nutzt effektive Modelle: fester Néel-Hintergrund (7.6–7.9 mit höchstens einer bzw. zwei Fluktuationen nahe am Paar),
   Paare nur aus Nachbarn, Prozesse bis 3 Elementarschritte, alle Prozesse mit einfachen Gewichten, keine
   Energienenner. Die Vorzeichen sind exakt, die Gewichte nicht.
 
@@ -832,3 +832,61 @@ Aus dem Gedächtnis, vor dem Zitieren bitte prüfen:
   Martinez, Horsch; Dagotto-Übersichtsartikel).
 - Trugman-Schleifen (S. A. Trugman, 1988); String-Bild und Paarbildung über geteilte Strings
   (u. a. Grusdt, Bohrdt und Mitarbeiter).
+
+## 10. Was gefunden wurde
+
+Stand am Ende der Diskussion. „Gerechnet“ heißt: mit den Skripten in diesem Verzeichnis geprüft. „Argument“
+heißt: begründet, aber nicht gerechnet.
+
+**Gerechnet**
+
+1. Das Repo-Vorzeichen eines Prozesses ist das Vorzeichen seines Gewichts in exp(−τH) (Abschnitt 1).
+   Prozesse, die sich nur im Reparatur-Zeitpunkt unterscheiden, interferieren.
+2. Besuchen die Wege aller Löcher keinen Platz zweimal, hängt das Vorzeichen nicht vom Reparatur-Zeitpunkt ab
+   (Abschnitt 2). Eine Abhängigkeit gibt es nur bei Kreuzungen oder Schleifen (Abschnitt 4).
+3. Regel für geschlossene Prozesse: Vorzeichen = (−1)^s · sgn(π_Loch) = (−1)^(n↑) · sgn(π_Loch) (7.1, 7.6).
+   In der zweiten Form tragen Vertauschungen kein Vorzeichen.
+4. Ein einzelnes Loch wechselt das Vorzeichen, sobald eine Fluktuation seinen Weg berührt (Phase-String). Das
+   Raupenpaar nicht: Der Schwanz bewegt jeden Spin ein zweites Mal (7.6).
+5. Die Raupe allein ist durch Interferenz lokalisiert: flaches Band, bei dem sich der Lochaustausch beim Wenden
+   (−1) nicht ausgleicht (7.3; auf dem Torus liegen alle 72 Impulse am Maximum, 7.9).
+6. Pivot und Domino (Paarschritte mit J) sind unfrustriert in der d-Wellen-Eichung (7.3; Torus: Verhältnis
+   1,000). Erst sie machen das Paar beweglich; die Raupe trägt zur Beweglichkeit nichts bei (7.9).
+7. Eine J-Wende hat ein festes Vorzeichen, wenn die Nachbarbindung, deren Spins sie bewegt, antiparallel ist
+   (in beiden Orientierungen dasselbe). Trägt die Bindung parallele Spins, kehrt es sich um (7.9).
+8. Tauschen zwei Raupenpaare die Plätze, ergibt das +1: Paare sind untereinander bosonisch (7.2).
+9. Exakte Diagonalisierung 4×4: Mit Vorzeichen sind zwei Löcher gebunden (E_b = −0,35 t bei J/t = 0,4), ohne
+   Vorzeichen nicht (+0,19 t) (6.1).
+10. Das Paar mit Spinwolke (bis zu zwei Fluktuationen) hat auf dem Torus ein gekrümmtes Band mit eindeutigem
+    Maximum bei K = 0 (7.9).
+
+**Korrigiert**
+
+- 7.6: Die Zeile „sauberes Néel, nur Prozesse mit Vertauschung: 1,000“ war trivial, weil die Aufzählung Pivot
+  und Domino zerlegt hatte.
+- 7.7/7.8: Die Auswahl „Raupe + freie J-Fluktuationen“ enthielt zerlegte J-Wenden. Die Deutung als „gebundene
+  Fluktuation“ ist überholt.
+- Das Verhältnis λ_max(M)/λ_max(|M|) misst nur lokale Frustration und ist kein Maß für ODLRO. Beispiel: Raupe
+  mit Fluktuationen, aber ohne J-Wenden, hat 0,92 und ist trotzdem fast unbeweglich.
+- 7.9: Der dort vorhergesagte Abfall mit der Entfernung gilt nur für eingefrorene Fluktuationen (7.11).
+
+**Idee für ODLRO (Argument, 7.11)**
+
+Vertauschungen tragen kein Vorzeichen, sie erzeugen alternative Wege. Im Quanten-Grundzustand wird für jeden
+Paarschritt über alle Varianten summiert. Übrig bleibt der konstruktive Überschuss, mit festem und überall
+gleichem Vorzeichen: bei der Raupe 1, bei einer J-Wende −(4/3)⟨S·S⟩ der bewegten Bindung, also etwa 0,4 bis
+0,5. Die Auslöschung macht das Paar schwerer, aber nicht inkohärent über große Entfernungen. Damit ist das Paar
+ein Quasiteilchen mit Band. Weil Paare bosonisch sind, kondensiert ein dünnes Gas von ihnen; das ergibt ODLRO,
+mit d-Welle aus der Eichung. Ein einzelnes Loch verliert durch destruktive Varianten mehr als ein Paar: ein
+kinetischer Grund für die Paarbildung. Ein Singulett-Hintergrund (7.10) ist der Grenzfall mit größtem
+Überschuss, aber keine Bedingung.
+
+**Offen**
+
+- ob die Spinwolke des Paares endlich bleibt (Quasiteilchengewicht größer null);
+- Wechselwirkung zwischen Paaren und der Vielteilchenschritt zur Kondensation;
+- ob sich destruktive Wege sogar paarweise exakt aufheben (stärkere Form der Idee);
+- echte Energien statt einfacher Gewichte, größere Systeme.
+
+**Werkzeuge:** `tj_gui_web.html` (Web-GUI; zwei Bewegungen vergleichen und für Claude speichern),
+`kohaerenz.py`, `fluktuationen.py`, `fluktuationen2.py`, `beweglichkeit.py`, `ed_tj.py` (siehe Inhalt).
