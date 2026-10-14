@@ -68,6 +68,7 @@ Kurzfassung:
 | `fluktuationen2.py` | wie `fluktuationen.py`, aber bis zu zwei Fluktuationen, mit Gegenprobe (Abschnitt 7.8, etwa 6 min auf 4 Kernen; numpy, scipy) | `python fluktuationen2.py` |
 | `beweglichkeit.py` | J-Wende über intakte und gebrochene Bindungen; Bandstruktur des Paares auf dem 12×12-Torus (Bloch-Blöcke mit Verschiebungsvorzeichen), sauber und mit bis zu zwei Fluktuationen (Abschnitt 7.9, etwa 4 min auf 4 Kernen; numpy, scipy; `--pruefen` vergleicht auf kleinen Tori mit der vollen Prozessmatrix) | `python beweglichkeit.py` |
 | `partner.py` | zwei getrennt laufende Löcher: Vorzeichen = Produkt der Einzelvorzeichen (7.12); viele Löcher als zwei Sorten Fermionen (7.13); wenige Sekunden | `python partner.py` |
+| `spurpaare.py` | Paare auf gemeinsamer Spur (nur Prozesse mit leerer ungerader Menge, Löcher dürfen sich entlang der Spur trennen): Bandstruktur auf dem Torus (Abschnitt 7.18, unter einer Minute) | `python spurpaare.py` |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
@@ -1085,6 +1086,70 @@ für die Elektronen. Die einzige echte Annahme steckt in Schritt 5:
 Die Verdrängung muss sich energetisch lohnen. Schritt 6 zeigt, dass der Grundzustand im kleinen System genau in
 diese Richtung geht.
 
+### 7.18 Annahme „jede Lochbewegung gibt es mit beiden Vorzeichen“: was daraus folgt (`spurpaare.py`)
+
+**Annahme A.** Fluktuationen des Hintergrunds machen jede Lochbewegung mit beiden Vorzeichen möglich.
+
+**Präzisierung über die Regel.** Das Vorzeichen ist (−1)^(↑ in O) · sgn(π_Loch). „Beide Vorzeichen“ heißt: Für ein
+Elektron in O ist offen, ob es ↑ oder ↓ war. Zwei Ausnahmen bleiben fest:
+- Elektronen, die gar nicht in O liegen (zweimal bewegt);
+- zwei Elektronen in O, die im selben Prozess miteinander vertauscht wurden. Eine Vertauschung gibt es nur zwischen
+  entgegengesetzten Spins, sie *beglaubigt* also: genau ein ↑.
+
+Summiert man über die Varianten, bleibt ein fester Beitrag nur von Prozessen, deren O leer ist oder nur aus
+beglaubigten Paaren besteht. Alle anderen heben sich weg, umso stärker, je mehr unbeglaubigte Elektronen O enthält.
+
+**Schritt 1: Einzelne Löcher.** Ein Loch, das ohne Reparatur über R Plätze läuft, hat R unbeglaubigte Elektronen in O.
+Sein Beitrag fällt mit R weg. Übrig bleibt der J-Schritt: Seine Reparatur vertauscht genau die beiden bewegten
+Elektronen und beglaubigt sie. Einzelne Löcher bewegen sich unter A also nur langsam (über J) und frustriert (7.4).
+
+**Schritt 2: Zwei Löcher auf gemeinsamer Spur.** Bewegt das zweite Loch dieselben Elektronen wie das erste, ist O
+leer, gleich mit welchem Abstand und welcher Verzögerung. Solche Prozesse kann der Hintergrund nicht verändern.
+Schneller Ladungstransport ohne Auslöschung bleibt unter A nur für zwei Löcher auf gemeinsamer Spur. Das wählt
+Paare aus, ohne dass sie Nachbarn bleiben müssen.
+
+**Schritt 3: Das allein reicht nicht (gerechnet).** Bei leerem O ist das Vorzeichen allein sgn(π_Loch). Der Tausch der
+beiden Löcher innerhalb des Paares gibt −1. Das Paar mit nur solchen Prozessen ist stark frustriert:
+
+| höchstens Sprünge pro Prozess (Abstand entlang der Spur) | Impulse am Maximum (von 72) | Beweglichkeit (w = 0,3 / 0,5 / 0,7) | Verhältnis (w = 0,5) |
+|---|---|---|---|
+| 2 (reine Raupe) | 72, flach | 0 / 0 / 0 | 0,667 |
+| 4 (Abstand bis 1) | 72, flach | 0 / 0 / 0 | 0,583 |
+| 6 (Abstand bis 2) | 1 | 0,012 / 0,016 / 0,017 | 0,525 |
+| 8 (Abstand bis 3) | 1 | 0,024 / 0,028 / 0,029 | 0,494 |
+
+Beweglichkeit wie in 7.9 (Krümmung des obersten Bandes, geteilt durch dieselbe Größe ohne Vorzeichen); jeder Prozess
+hat das Gewicht w^(Sprünge). Das Band bleibt bis Abstand 1 exakt flach. Danach ist es kaum gekrümmt (2–3 % des
+vorzeichenfreien Werts), und die Frustration nimmt mit dem Abstand sogar zu. Auftrennen entlang der Spur macht
+das Paar also nicht beweglich.
+
+**Schritt 4: Was das Paar beweglich macht: beglaubigte Vertauschungen.** Eine J-Wende mit ihrer Reparatur
+vertauscht die beiden bewegten Elektronen. Die Vertauschung beglaubigt genau ein ↑ in O und liefert das −1, das den
+Lochtausch ausgleicht (7.3). Solche Prozesse überleben A. Ist die Bindung gerade parallel, gibt es diesen Prozess
+einfach nicht; er tritt seltener auf, bekommt aber kein falsches Vorzeichen. Mit ihnen ist das Paar beweglich,
+mit eindeutigem Bandmaximum bei K = 0 (7.9: Beweglichkeit 0,74 / 0,46 / 0,23).
+
+**Schritt 5: Der letzte Widerspruch, und was A daran ändert.** Gegen die J-Wenden steht nur der gerade
+Raupenschritt (O leer, falsches Vorzeichen in der d-Wellen-Eichung, 7.3). Unter A hat auch er eine beglaubigte
+Variante: Eine Vertauschung zwischen Kopf- und Schwanzsprung tauscht das verschobene Elektron gegen einen
+entgegengesetzten Nachbarn. Das beglaubigt ein ↑ in O und dreht das Vorzeichen in die passende Richtung. Im
+sauberen Néel gibt es diese Variante nicht; dort steht das verschobene Elektron zwischen gleichen Spins. Mit
+Fluktuationen gibt es sie. Fluktuationen schwächen also genau den einen störenden Schritt. Das passt zum Trend in
+7.8 (0,708 → 0,880 → 0,932 mit wachsender Freiheit des Hintergrunds, mit zufälligen Vorzeichen 0,721).
+
+**Schritt 6: ODLRO.** Unter A bleiben als schnelle, kohärente Ladungsträger Paare: Ihr Tausch untereinander gibt +1,
+und sie haben ein Band mit eindeutigem Maximum bei K = 0. Ein dünnes Gas solcher Bosonen kondensiert dort, also
+⟨Δ†(R)Δ(0)⟩ → konstant. Einzelne Löcher bleiben langsam und frustriert, und nach Pauli kann ihr Einteilchenkanal
+ohnehin kein ODLRO tragen (7.17, Schritt 8).
+
+**Zusammengefasst.** A wirkt doppelt:
+- Fluktuationen löschen alles Unbeglaubigte aus und wählen damit Paare aus (Schritte 1–2).
+- Vertauschungen, die Teil des Prozesses sind, beglaubigen Spinpaare und liefern das Vorzeichen, das den Lochtausch
+  ausgleicht (Schritte 4–5).
+
+Ohne den zweiten Teil wäre das ausgewählte Paar lokalisiert (Schritt 3). Offen ist, ob die beglaubigte Variante des
+geraden Raupenschritts den Widerspruch ganz aufhebt oder nur abschwächt; das hängt von den Gewichten ab.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -1218,6 +1283,16 @@ verdrängen (diamagnetische Ungleichung, für feste Felder ein Satz). Ohne Frust
 und der Paartransfer zeigt ODLRO (Standard). Das Tauschvorzeichen einzelner Löcher ist ebenfalls ausgleichbar;
 der Kanal ist das Paar, weil die Einteilchen-Dichtematrix der Elektronen nach Pauli kein ODLRO haben kann. Die einzige Annahme: Die Verdrängung lohnt sich energetisch. Die
 gebundene Spinwolke und die sinkende Frustration in 7.8 zeigen, dass der Grundzustand diesen Weg geht.
+
+**Annahme „beide Vorzeichen“ (7.18)**
+
+Unter der Annahme, dass Fluktuationen jede Lochbewegung mit beiden Vorzeichen möglich machen, bleiben nur Prozesse
+mit leerer ungerader Menge oder mit *beglaubigten* Paaren in O (zwei Elektronen, die im selben Prozess vertauscht
+wurden, also sicher eines ↑). Das wählt Paare aus; einzelne Löcher bleiben langsam. Ein Paar mit nur leerer
+ungerader Menge (gemeinsame Spur, auch mit Abstand) ist aber praktisch lokalisiert: Das Band ist bis Abstand 1 exakt
+flach, danach liegt die Beweglichkeit bei 2–3 % (gerechnet). Beweglich wird es erst durch beglaubigte
+Vertauschungen (J-Wende mit Reparatur), die den Lochtausch ausgleichen. Fluktuationen geben auch dem geraden
+Raupenschritt, dem einzigen störenden Schritt, eine beglaubigte Variante mit passendem Vorzeichen.
 
 **Offen**
 
