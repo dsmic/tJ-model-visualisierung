@@ -1177,12 +1177,23 @@ Position kommt.
 4. **Rolle der Fluktuationen.** Sie löschen genau die Beiträge aus, deren Vorzeichen vom Hintergrund abhängt. Das
    sind die Beiträge, die den beiden Partnern verschiedene Vorzeichen geben und das Quadrat zerstören könnten
    (Paarbrecher). Übrig bleibt ein Vorzeichen, das für beide Partner gleich ist; ihr Produkt ist ein Quadrat.
-5. **Von „nie negativ“ zu ODLRO.** Positivität auf jeder Entfernung ist nötig, reicht aber allein nicht: Für zwei
-   freie Löcher ist G(R)² zwar positiv, fällt aber mit R ab, und eine makroskopische Besetzung des Paarkanals entsteht
-   nicht. Dazu braucht es eine Anziehung zwischen ↑- und ↓-Lücke. Weil der Paarkanal eine Summe von Quadraten ist und
-   nie destruktiv interferiert, reicht jede Anziehung (Cooper-Argument in dieser Sprache). Hinweise auf die
-   Anziehung: 6.1 (mit Vorzeichen gebunden, ohne nicht) und der Raupenschritt, den nur benachbarte Löcher haben
-   (7.13).
+5. **Von „nie negativ“ zu ODLRO (korrigiert).** Im Argument 1.–4. kommt keine Entfernung vor, und für eine ↑- und
+   eine ↓-Lücke allein fällt auch nichts ab: Im Grundzustand sitzen beide im tiefsten Zustand ihres Bandes, und die
+   Paaramplitude ist auf allen Entfernungen gleich groß (bis auf den Faktor 1/N). Eine frühere Fassung behauptete
+   hier, G(R)² falle für freie Löcher mit R ab. Das folgt nicht aus der Annahme. Es gilt erst für **viele** Löcher,
+   und zwar wegen des Pauli-Prinzips innerhalb einer Sorte:
+   - Zwei ↑-Lücken tauschen mit −1, auch unter A (die beglaubigten Vorzeichen sind fest; 7.13: Vorzeichen =
+     (−1)^Schritte · sgn(π_↑) · sgn(π_↓)). N ↑-Lücken müssen deshalb N verschiedene Zustände besetzen, ebenso die
+     ↓-Lücken.
+   - Bewegen sich die Löcher unabhängig, ist der Paartransfer |Σ über die besetzten Zustände φ_k(R) φ_k(0)*|². Das ist
+     das Quadrat einer Summe über verschiedene Zustände mit verschiedenen Phasen bei R, und diese Summe löscht sich mit
+     wachsendem R aus (Fermi-See). Die Entfernung kommt also durch die vielen verschiedenen besetzten Zustände
+     hinein, nicht durch die Wege.
+   - ODLRO heißt dagegen: Alle Paare besetzen denselben Paarzustand. Dann addieren sich ihre Beiträge auf jeder
+     Entfernung (makroskopisch, ∝ Zahl der Paare). Das verlangt, dass ↑-Lücke bei k und ↓-Lücke bei −k gemeinsam,
+     in fester Phase, besetzt werden statt unabhängig. Dafür braucht es eine Anziehung zwischen den Sorten. Weil der
+     Paarkanal nie destruktiv interferiert (1.–4.), reicht jede (Cooper). Hinweise auf die Anziehung: 6.1 (mit
+     Vorzeichen gebunden, ohne nicht) und der Raupenschritt, den nur benachbarte Löcher haben (7.13).
 
 Damit ist 7.18, Schritt 2 („schneller Transport nur auf gemeinsamer Spur“) für die Frage nach ODLRO nicht
 entscheidend. Auch einzeln, langsam wandernde Löcher geben einen Paartransfer ohne Auslöschung.
@@ -1337,7 +1348,10 @@ Ein J-Schritt mit eigener Reparatur hat immer genau einen Sprung, der ein ↑ be
 in jedem Hintergrund (exakt). Wandern die beiden Löcher einzeln zur neuen Position, zerfällt die Summe über alle
 Wege in ein Produkt G_A(R) · G_B(R) = G(R)² ≥ 0: Der Paartransfer ist auf jeder Entfernung nicht negativ, wie
 stark G(R) selbst schwankt. Fluktuationen löschen genau die Beiträge aus, die den Partnern verschiedene
-Vorzeichen geben würden. Für ODLRO braucht es zusätzlich eine Anziehung; wegen der Positivität reicht jede.
+Vorzeichen geben würden. Eine Entfernung kommt erst mit vielen Löchern ins Spiel: Innerhalb einer Sorte gilt Pauli
+(Tausch −1, auch unter A). Unabhängige Löcher besetzen viele verschiedene Zustände, deren Phasen sich bei großem R
+auslöschen. ODLRO verlangt, dass alle Paare denselben Paarzustand besetzen; dafür braucht es eine Anziehung, und
+wegen der Positivität reicht jede.
 
 **Offen**
 
