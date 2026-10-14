@@ -895,6 +895,52 @@ trennen und in Phase wieder verbinden.
    Dort entstehen Vorzeichen zwischen den Sorten (gegenseitige Statistik, Phase-String). Wie häufig das bei
    endlicher Dotierung ist und ob es die Paarung zerstört, ist offen.
 
+### 7.14 Der Hintergrund als Filter: die ungerade Menge
+
+Gesucht ist ein Mechanismus, bei dem der Hintergrund selbst durch Interferenz entscheidet, welche
+Transferoperatoren langreichweitig kohärent bleiben, und nicht die Statistik der Löcher.
+
+**Exakte Regel (Umformung von 7.6).** n↑ zählt Lochsprünge, die ein ↑-Elektron bewegen. Nach Elektronen sortiert:
+
+    Vorzeichen = (−1)^(Zahl der ↑-Elektronen in O) · sgn(π_Loch)
+
+Dabei ist O die **ungerade Menge**: die Elektronen, die von Lochsprüngen (aller Löcher zusammen) ungerade oft
+bewegt wurden. Elektronen, die zweimal bewegt wurden, und alle Vertauschungen spielen keine Rolle. Für zwei
+Prozesse mit gleichem Anfang und Ende ist das relative Vorzeichen entsprechend (−1)^(↑ in O₁ + ↑ in O₂) mal die
+relative Lochpermutation.
+
+Bekannte Fälle als Probe:
+- Raupe: Jedes Elektron wird zweimal bewegt, O ist leer, also immun (7.6).
+- Einzelnes Loch: O ist seine Spur. Eine Fluktuation, die ein Spur-Elektron mit einem von außerhalb tauscht,
+  ändert die Parität (7.6).
+- J-Wende: O ist die bewegte Bindung c–a′. Umklappen genau dieser Bindung lässt die Zahl der ↑ gleich, Brechen
+  ändert sie (Tabelle in 7.9).
+- J-Schritt einer Lücke: O enthält ein ↑ und ein ↓, also −1 pro Schritt (7.4, 7.13).
+
+**Wie der Hintergrund filtert (Idee).** Der Hintergrund bestimmt das Vorzeichen nur über die Spins in O:
+- Kommen die Spins in O in Paaren vor, die in jeder Komponente des Hintergrunds antiparallel sind (z. B. ein
+  Singulett mit beiden Enden in O), ist die Parität fest, und alle Varianten interferieren konstruktiv.
+- Jeder Spin in O, dessen Partner nicht in O liegt, trägt in den Komponenten des Hintergrunds verschiedene
+  Paritäten. Varianten mit entgegengesetztem Vorzeichen löschen sich dann teilweise aus.
+
+**Folgen:**
+- *Ein Loch* kann die Partner der Spins, die es bewegt, nicht mitbewegen (außer entlang der eigenen Spur). Seine
+  Varianten löschen sich aus.
+- *Zwei oder mehr Löcher* können sich gegenseitig neutralisieren: Ein zweites Loch bewegt die Partner der Spins,
+  die das erste bewegt hat. Wann und wo das geschieht, ist gleichgültig. Die Phase ist so lange in der Bindung des
+  Hintergrunds gespeichert, bis der Partner kommt. Die Löcher können sich also trennen, und welches Loch welches
+  neutralisiert, entscheiden die Bindungen des Hintergrunds, nicht die Löcher. Auch Ketten sind möglich: Ein Loch
+  übernimmt, wo ein anderes aufgehört hat.
+- Nach der Summe über die Varianten des Hintergrunds bleiben Prozesse übrig, deren ungerade Menge neutral ist. Ihre
+  Nettowirkung auf die Ladung ist ein Transfer von Lochpaaren. Ein Einloch-Transfer über große Entfernungen bleibt
+  nicht übrig.
+
+**Was für ODLRO noch fehlt.** Der Hintergrund muss für typische Paartransfers über jede Entfernung R neutrale
+ungerade Mengen anbieten, also Bindungen, die die Spuren der beteiligten Löcher verknüpfen. Die Frage wird damit
+quantitativ: Bei welcher Verteilung der Bindungslängen im Hintergrund fällt das Gewicht neutraler Paartransfers
+mit R nicht ab, während das der Einlochtransfers abfällt? Ein Antiferromagnet enthält im Valenzbindungsbild
+Bindungen aller Längen (aus dem Gedächtnis), ein kurzreichweitiges Singulett-Gemisch nur kurze. Nicht gerechnet.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -990,6 +1036,14 @@ Paarschritt über alle Varianten summiert. Übrig bleibt der konstruktive Übers
 gleichem Vorzeichen: bei der Raupe 1, bei einer J-Wende −(4/3)⟨S·S⟩ der bewegten Bindung, also etwa 0,4 bis
 0,5. Der Schritt von dort zu einem fest gebundenen Paar als Quasiteilchen ist schwach; 7.12 braucht ihn nicht. Ein
 Singulett-Hintergrund (7.10) ist der Grenzfall mit größtem Überschuss.
+
+**Der Hintergrund als Filter (7.14)**
+
+Exakt: Vorzeichen = (−1)^(↑-Elektronen in O) · sgn(π_Loch), mit O = Elektronen, die ungerade oft von
+Lochsprüngen bewegt wurden. Idee: Der Hintergrund löscht Varianten aus, in denen ein Spin in O keinen
+antiparallelen Partner in O hat, und verstärkt die anderen. Löcher können sich gegenseitig neutralisieren, auch
+getrennt und zeitversetzt, weil die Bindung des Hintergrunds die Phase speichert. Übrig bleiben Paartransfers.
+Offen ist, bei welcher Bindungsstruktur des Hintergrunds das Gewicht neutraler Paartransfers nicht mit R abfällt.
 
 **Offen**
 
