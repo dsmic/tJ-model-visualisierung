@@ -949,6 +949,37 @@ Paartransfers nur vom Ziel abhängt? Wie weit sich Partner seitlich trennen kön
 Bindungen ab, ist für ODLRO aber nicht entscheidend: Entlang der Spur können Partner beliebig weit
 auseinanderliegen (Folgen auf derselben Spur gibt O = ∅ ohne jede Bedingung).
 
+### 7.15 Welche Schritte stören, und warum ein Singulett-Hintergrund genau sie aussortiert
+
+Die Frage aus 7.14: Gibt es einen Grund, weshalb (−1)^(Singuletts in O) · sgn(π_Loch) für alle verbleibenden
+Paartransfers nur vom Ziel abhängt?
+
+1. **Nur ein Schritttyp stört.** In der d-Wellen-Eichung aus 7.3 sind Pivot, Domino und alle Raupenschritte mit
+   Wende positiv (392/392). Negativ sind genau die geraden Raupenschritte (192/192). Die gesamte Frustration der
+   Paarbewegung kommt also aus einem einzigen Schritttyp.
+2. **Was ein Raupenschritt mit einem Singulett macht.** Ein Raupenschritt verschiebt genau ein Elektron um zwei
+   Plätze, vom Zielplatz des Kopfes auf den alten Platz des Schwanzes.
+   - Beim geraden Schritt geht es zwei Plätze geradeaus. Sein Singulett-Partner (ein Nachbar des Ausgangsplatzes)
+     ist danach drei oder √5 Plätze entfernt, nie ein Nachbar. Das Singulett wird gestreckt.
+   - Beim Schritt mit Wende geht es diagonal. Das Singulett bleibt genau dann ein Nachbarpaar, wenn der Partner an
+     der vierten Ecke der Plakette sitzt. Dann ist der Schritt derselbe Übergang wie ein Pivot (Paar und Singulett
+     drehen sich auf der Plakette).
+   - Pivot und Domino nehmen das Singulett als Ganzes mit; es bleibt ein Nachbarpaar.
+3. **Folge.** In einem Hintergrund aus Nachbar-Singuletts bleiben genau die Plakettenbewegungen im Singulett-Raum:
+   Paar und paralleles Singulett auf einer Plakette drehen sich (Pivot bzw. Raupenschritt mit Wende) oder
+   tauschen (Domino bzw. zwei Raupenschritte mit Wende). Alle sind in der d-Wellen-Eichung positiv; Übergänge zum
+   selben Ziel addieren sich (+1 in der Tabelle von 7.9). Die störenden geraden Raupenschritte führen aus dem
+   Singulett-Raum heraus. **Der Singulett-Hintergrund sortiert also genau die frustrierenden Schritte aus.**
+   Im Néel ist es umgekehrt: Dort ist der gerade Raupenschritt der natürlichste Schritt, weil er Néel ohne J
+   wiederherstellt. Deshalb ist die Paarbewegung im Néel frustriert (flaches Band).
+4. **Grenze des Arguments, und wo die Interferenz hineinkommt.** Das Aussortieren in 3. beruht nicht auf
+   Vorzeichen, sondern darauf, dass ein gestrecktes Singulett den Singulett-Raum verlässt (es kostet J-Energie und
+   überlappt weniger). Verboten ist der gerade Raupenschritt nicht: J kann das gestreckte Singulett wieder in
+   Nachbar-Singuletts umordnen. Ob dieser Umweg mit dem d-Wellen-Vorzeichen zurückkommt (harmlos) oder mit dem
+   falschen (Restfrustration der Ordnung J/ΔE), ist eine reine Interferenzfrage. Ebenso offen ist, ob die
+   Resonanzen der Singuletts untereinander mit der d-Wellen-Eichung der Paarbewegung verträglich sind. Beides lässt
+   sich auf einem kleinen Gitter exakt prüfen.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -1053,6 +1084,14 @@ antiparallelen Partner in O hat, und verstärkt die anderen. Löcher können sic
 getrennt und zeitversetzt, weil die Bindung des Hintergrunds die Phase speichert. Übrig bleiben Paartransfers.
 Offen ist, ob alle neutralen Paartransfers zum selben Ziel auch dasselbe Vorzeichen haben: Das Vorzeichen ist
 (−1)^(Singuletts in O) · sgn(π_Loch), und gerade Raupenschritte passen damit nicht zu J-Wenden.
+
+**Warum ein Singulett-Hintergrund die störenden Schritte aussortiert (7.15)**
+
+In der d-Wellen-Eichung sind alle Paarschritte positiv außer den geraden Raupenschritten. Ein gerader
+Raupenschritt verschiebt ein Elektron um zwei Plätze geradeaus und streckt dabei sein Singulett. In einem
+Hintergrund aus Nachbar-Singuletts bleiben nur die Plakettenbewegungen (Paar und Singulett drehen oder tauschen),
+und die sind alle positiv. Offen: ob der Umweg über ein gestrecktes Singulett und J zurück das richtige Vorzeichen
+trägt, und ob die Resonanzen der Singuletts mit der d-Wellen-Eichung verträglich sind.
 
 **Offen**
 
