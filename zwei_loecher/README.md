@@ -1012,6 +1012,62 @@ einzelnes Loch beide Vorzeichen erreichbar, mit demselben Anfang und demselben E
    billiger sein als der Gewinn an Paarbewegung. (b) Läuft der Trend aus 4. gegen 1, wenn der Hintergrund noch mehr
    Freiheit bekommt (drei und mehr Fluktuationen)? (c) Die Vergleichsrechnung für viele einzelne Löcher.
 
+### 7.17 Argumentation: Fluktuationen existieren ⇒ ODLRO
+
+Markiert ist, was exakt ist, was ein Satz ist und was Annahme oder Argument ist.
+
+**Schritt 1 (exakt): Woher Vorzeichen kommen.** Für jeden Prozess gilt
+Vorzeichen = (−1)^(↑-Elektronen in O) · sgn(π_Loch). O sind die Elektronen, die von Lochsprüngen ungerade oft
+bewegt wurden. Vertauschungen tragen kein Vorzeichen; reine Spinprozesse sind vorzeichenfrei (Marshall). Jeder
+Lochsprung trägt also den Faktor −1 genau dann, wenn er ein ↑ bewegt: Die Spins des Hintergrunds sind ein
+Z2-Feld, an das die Löcher koppeln (7.1, 7.6, 7.14).
+
+**Schritt 2 (exakt): Ohne Fluktuationen ist dieses Feld starr, und die Paarbewegung ist frustriert.** Im sauberen
+Néel liegt das Feld fest. Die Raupe hat O = ∅, ihr Vorzeichen ist allein der Lochaustausch. Nach dem Kopfsprung
+sitzt das verschobene Elektron zwischen Nachbarn mit gleichem Spin, keine Vertauschung kann es erreichen, und
+das Vorzeichen ist nicht veränderbar. Ergebnis: flaches Band, die gerade Raupe widerspricht den J-Wenden
+(7.3, 7.9). Kein Grund für ODLRO.
+
+**Schritt 3 (exakt): Mit Fluktuationen wird jedes Vorzeichen verstellbar.** Tauscht eine Fluktuation ein
+Elektron aus O gegen eines von außerhalb, ändert sich die Parität. Anfang und Ende bleiben gleich, wenn sie
+zurückgetauscht wird (7.6). Für die Raupe gilt dasselbe, sobald neben ihrer Spur eine Fluktuation existiert: Eine
+Vertauschung zwischen Kopf- und Schwanzsprung macht O zu zwei entgegengesetzten Elektronen und dreht das
+Vorzeichen. Mit Fluktuationen ist das Z2-Feld also dynamisch. Das Vorzeichen eines Paartransfers ist keine
+Eigenschaft der Geometrie mehr, sondern hängt davon ab, wie der Hintergrund mit den Löchern korreliert ist.
+
+**Schritt 4 (exakt): Paare sind Bosonen.** Tauschen zwei Paare die Plätze, ist O leer und die Lochpermutation
+gerade: +1 (7.2).
+
+**Schritt 5 (Satz, dann Annahme): Bosonen verdrängen Frustration.** Diamagnetische Ungleichung: Für Bosonen
+mit positiven Hüpfamplituden erhöht jeder Fluss (jedes −1 auf einer geschlossenen Bahn) die Grundzustandsenergie.
+Frustration bringt den Paaren also nur Nachteile. Weil das Feld nach Schritt 3 verstellbar ist, kann der
+Grundzustand den Hintergrund so mit den Paaren korrelieren, dass ihre Bahnen konstruktiv werden; der Preis ist
+Austauschenergie des Hintergrunds. *Annahme:* Der Gewinn an Paarbewegung übersteigt diesen Preis. Das ist das
+Gegenstück zur Verdrängung eines Magnetfelds durch ein Kondensat.
+
+**Schritt 6 (Hinweis aus den Rechnungen): Der Grundzustand tut das tatsächlich.** Ein Paar bindet im
+Grundzustand Fluktuationen (54 % mit zwei bei Gewicht 0,3, 7.8). Mit wachsender Freiheit des Hintergrunds sinkt
+die Frustration der Paarbewegung: 0,708 → 0,880 → 0,932, mit zufälligen Vorzeichen dagegen nur 0,721. Auf dem
+Torus hat das Paar mit Fluktuationen ein Band mit eindeutigem Maximum bei K = 0 (7.9). Die Spinwolke ist die
+Korrelation aus Schritt 5.
+
+**Schritt 7 (Standardargument): ODLRO.** Ohne Frustration ist die Paardynamik vorzeichenfrei. Nach
+Perron–Frobenius sind dann alle Amplituden des Grundzustands positiv, und ⟨Δ†(R)Δ(0)⟩ ist eine Summe positiver
+Terme. Auslöschung ist auf keiner Entfernung möglich. Sind die Paare beweglich (kein Kristall), kondensieren sie
+und G(R) → konstant ≠ 0.
+
+**Schritt 8: Warum nicht einzelne Löcher.** Für einzelne Löcher gilt Schritt 5 nicht: Ihr gegenseitiger Tausch
+gibt −1, und das kann kein Hintergrund beseitigen. Der Hintergrund darf einzelnen Löchern Frustration lassen,
+solange Paartransfers konstruktiv sind. Die beiden Löcher eines Paares müssen dabei nicht beisammenbleiben:
+Verdrängt wird die Frustration der Paartransfers, gleich auf welchem Weg die Löcher laufen. Wie groß ein Paar
+wird, entscheidet die Energie.
+
+**Kurz:** Fluktuationen machen die Vorzeichen zu einem dynamischen Feld (exakt). Paare sind Bosonen (exakt).
+Bosonen senken ihre Energie, indem sie Frustration verdrängen (Satz für feste Felder). Ein frustrationsfreies
+Bosonensystem hat positive Amplituden und kondensiert (Standard). Die einzige echte Annahme steckt in Schritt 5:
+Die Verdrängung muss sich energetisch lohnen. Schritt 6 zeigt, dass der Grundzustand im kleinen System genau in
+diese Richtung geht.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -1135,6 +1191,14 @@ sind; der Paartransfer ist dann eine Summe positiver Terme (ODLRO). Für viele e
 diesen Zwang nicht. Hinweis: Mit mehr Freiheit im Hintergrund sinkt die Frustration der Paarbewegung (7.8), und
 zwar wegen der echten Vorzeichen. Offen: die Energiekosten, der Grenzwert bei mehr Freiheit, der Vergleich mit
 einzelnen Löchern.
+
+**Argumentationskette (7.17)**
+
+Fluktuationen machen die Vorzeichen zu einem dynamischen Z2-Feld; ohne sie ist die Raupe starr und die
+Paarbewegung frustriert (exakt). Paare sind Bosonen (exakt). Bosonen senken ihre Energie, indem sie Frustration
+verdrängen (diamagnetische Ungleichung, für feste Felder ein Satz). Ohne Frustration sind alle Amplituden positiv,
+und der Paartransfer zeigt ODLRO (Standard). Die einzige Annahme: Die Verdrängung lohnt sich energetisch. Die
+gebundene Spinwolke und die sinkende Frustration in 7.8 zeigen, dass der Grundzustand diesen Weg geht.
 
 **Offen**
 
