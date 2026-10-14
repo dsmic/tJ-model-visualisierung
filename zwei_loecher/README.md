@@ -69,6 +69,7 @@ Kurzfassung:
 | `beweglichkeit.py` | J-Wende über intakte und gebrochene Bindungen; Bandstruktur des Paares auf dem 12×12-Torus (Bloch-Blöcke mit Verschiebungsvorzeichen), sauber und mit bis zu zwei Fluktuationen (Abschnitt 7.9, etwa 4 min auf 4 Kernen; numpy, scipy; `--pruefen` vergleicht auf kleinen Tori mit der vollen Prozessmatrix) | `python beweglichkeit.py` |
 | `partner.py` | zwei getrennt laufende Löcher: Vorzeichen = Produkt der Einzelvorzeichen (7.12); viele Löcher als zwei Sorten Fermionen (7.13); wenige Sekunden | `python partner.py` |
 | `spurpaare.py` | Paare auf gemeinsamer Spur (nur Prozesse mit leerer ungerader Menge, Löcher dürfen sich entlang der Spur trennen): Bandstruktur auf dem Torus (Abschnitt 7.18, unter einer Minute) | `python spurpaare.py` |
+| `prompt_andere_llms.md` | Prompt, um andere Sprachmodelle die Argumentation aus Abschnitt 7 kritisch prüfen zu lassen (Problem, geprüfte Ergebnisse, Argumentationskette, Schwachstellen, Fragen) | – |
 | `fluktuationen.py` | Fluktuationen auf dem Weg (ein Loch, Raupe) und Paarbewegung mit einer J-Fluktuation, vollständige Prozessaufzählung (Abschnitt 7.6, etwa 5 min) | `python fluktuationen.py` |
 | `ed_tj.py` | exakte Diagonalisierung, t-J-Modell gegen vorzeichenfreie Version (etwa 17 min) | `python ed_tj.py --out ed_ergebnisse.md` |
 | `ed_ergebnisse.md` | vollständige Ausgabe von `ed_tj.py` (4×4 periodisch, J/t = 0,2 / 0,4 / 0,6 / 1,0) | – |
