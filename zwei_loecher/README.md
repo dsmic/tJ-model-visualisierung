@@ -1191,9 +1191,28 @@ Position kommt.
      hinein, nicht durch die Wege.
    - ODLRO heißt dagegen: Alle Paare besetzen denselben Paarzustand. Dann addieren sich ihre Beiträge auf jeder
      Entfernung (makroskopisch, ∝ Zahl der Paare). Das verlangt, dass ↑-Lücke bei k und ↓-Lücke bei −k gemeinsam,
-     in fester Phase, besetzt werden statt unabhängig. Dafür braucht es eine Anziehung zwischen den Sorten. Weil der
-     Paarkanal nie destruktiv interferiert (1.–4.), reicht jede (Cooper). Hinweise auf die Anziehung: 6.1 (mit
-     Vorzeichen gebunden, ohne nicht) und der Raupenschritt, den nur benachbarte Löcher haben (7.13).
+     in fester Phase, besetzt werden statt unabhängig.
+
+6. **Interferenz verteilt um, sie vernichtet nicht** (Einwand aus der Diskussion). Das Gesamtgewicht ist fest: Die
+   Spur der Zweiteilchen-Dichtematrix ist N↑ · N↓. Bei unabhängigen Löchern (Fermi-See) ist dieses Gewicht auf
+   viele Paarzustände mit Besetzung höchstens 1 verteilt. „Fällt mit R ab“ heißt nur, dass kein einzelner
+   Paarzustand makroskopisch besetzt ist. Es wird kein Gewicht vernichtet, und es gibt dort auch keinen Grund, es zu
+   bündeln: Der Fermi-See ist für unabhängige Löcher schon das Optimum.
+
+   Im Grundzustand fließt Gewicht dorthin, wo die Wege konstruktiv interferieren, denn das senkt die Energie. Bei
+   den Löchern ist das asymmetrisch:
+   - Unabhängige Bewegung verliert durch Auslöschung (unbeglaubigte Beiträge löschen sich unter A aus,
+     Frustration −1 pro Dreieck).
+   - Bewegung, die es nur für benachbarte oder korrelierte Löcher gibt (Raupe, gemeinsame Spur; O leer, also immun),
+     ist vollständig konstruktiv.
+
+   Darum fließt Gewicht in gepaarte Konfigurationen. Diese Umverteilung *ist* die Anziehung; man muss sie nicht
+   zusätzlich annehmen. Die exakte Diagonalisierung zeigt genau das (6.1): Mit Vorzeichen verlieren die Löcher
+   Hüpfenergie (−5,5 statt −7,4) und sind gebunden; im vorzeichenfreien Modell, wo es nichts umzuverteilen gibt,
+   sind sie ungebunden. In welchen Paarzustand das Gewicht fließt, entscheidet wieder die Interferenz: in den
+   konstruktivsten, das Bandmaximum bei K = 0 (7.9). Paare tauschen untereinander mit +1, viele können ihn also
+   gemeinsam besetzen. Das ist die makroskopische Besetzung, also ODLRO. Yangs Schranke erlaubt eine Besetzung
+   ∝ N, nicht mehr; das Gewicht muss also nicht vollständig, sondern nur in einem festen Anteil gebündelt werden.
 
 Damit ist 7.18, Schritt 2 („schneller Transport nur auf gemeinsamer Spur“) für die Frage nach ODLRO nicht
 entscheidend. Auch einzeln, langsam wandernde Löcher geben einen Paartransfer ohne Auslöschung.
@@ -1350,8 +1369,9 @@ Wege in ein Produkt G_A(R) · G_B(R) = G(R)² ≥ 0: Der Paartransfer ist auf je
 stark G(R) selbst schwankt. Fluktuationen löschen genau die Beiträge aus, die den Partnern verschiedene
 Vorzeichen geben würden. Eine Entfernung kommt erst mit vielen Löchern ins Spiel: Innerhalb einer Sorte gilt Pauli
 (Tausch −1, auch unter A). Unabhängige Löcher besetzen viele verschiedene Zustände, deren Phasen sich bei großem R
-auslöschen. ODLRO verlangt, dass alle Paare denselben Paarzustand besetzen; dafür braucht es eine Anziehung, und
-wegen der Positivität reicht jede.
+auslöschen. ODLRO verlangt, dass alle Paare denselben Paarzustand besetzen. Die nötige Anziehung erzeugt die
+Interferenz selbst: Gewicht fließt dorthin, wo die Wege konstruktiv sind, und das sind korrelierte Paarbewegungen
+(6.1: gebunden nur mit Vorzeichen).
 
 **Offen**
 
