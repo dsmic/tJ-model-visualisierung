@@ -935,11 +935,19 @@ Bekannte Fälle als Probe:
   Nettowirkung auf die Ladung ist ein Transfer von Lochpaaren. Ein Einloch-Transfer über große Entfernungen bleibt
   nicht übrig.
 
-**Was für ODLRO noch fehlt.** Der Hintergrund muss für typische Paartransfers über jede Entfernung R neutrale
-ungerade Mengen anbieten, also Bindungen, die die Spuren der beteiligten Löcher verknüpfen. Die Frage wird damit
-quantitativ: Bei welcher Verteilung der Bindungslängen im Hintergrund fällt das Gewicht neutraler Paartransfers
-mit R nicht ab, während das der Einlochtransfers abfällt? Ein Antiferromagnet enthält im Valenzbindungsbild
-Bindungen aller Längen (aus dem Gedächtnis), ein kurzreichweitiges Singulett-Gemisch nur kurze. Nicht gerechnet.
+**Was für ODLRO noch fehlt.** Neutral heißt nur: Jeder Prozess hat ein festes Vorzeichen, unabhängig von der
+Komponente des Hintergrunds. Verschiedene neutrale Prozesse können aber verschiedene feste Vorzeichen haben. Jedes
+Singulett in O trägt genau ein ↑ bei, also gilt
+
+    Vorzeichen eines neutralen Prozesses = (−1)^(Zahl der Singuletts in O) · sgn(π_Loch)
+
+Zwei neutrale Paartransfers zum selben Ziel addieren sich nur, wenn diese Größe für beide gleich ist (bis auf
+einen Faktor, der nur vom Ziel abhängt). Genau hier sitzt die bekannte Frustration: Die Raupe hat O = ∅, eine
+J-Wende ein Singulett in O. Gerade Raupenschritte und J-Wenden passen nicht zusammen (7.3, 7.9). Die eigentliche
+Frage lautet also: Gibt es einen Grund, weshalb (−1)^(Singuletts in O) · sgn(π_Loch) für alle neutralen
+Paartransfers nur vom Ziel abhängt? Wie weit sich Partner seitlich trennen können, hängt zwar von der Länge der
+Bindungen ab, ist für ODLRO aber nicht entscheidend: Entlang der Spur können Partner beliebig weit
+auseinanderliegen (Folgen auf derselben Spur gibt O = ∅ ohne jede Bedingung).
 
 ## 8. Grenzen
 
@@ -1043,7 +1051,8 @@ Exakt: Vorzeichen = (−1)^(↑-Elektronen in O) · sgn(π_Loch), mit O = Elektr
 Lochsprüngen bewegt wurden. Idee: Der Hintergrund löscht Varianten aus, in denen ein Spin in O keinen
 antiparallelen Partner in O hat, und verstärkt die anderen. Löcher können sich gegenseitig neutralisieren, auch
 getrennt und zeitversetzt, weil die Bindung des Hintergrunds die Phase speichert. Übrig bleiben Paartransfers.
-Offen ist, bei welcher Bindungsstruktur des Hintergrunds das Gewicht neutraler Paartransfers nicht mit R abfällt.
+Offen ist, ob alle neutralen Paartransfers zum selben Ziel auch dasselbe Vorzeichen haben: Das Vorzeichen ist
+(−1)^(Singuletts in O) · sgn(π_Loch), und gerade Raupenschritte passen damit nicht zu J-Wenden.
 
 **Offen**
 
