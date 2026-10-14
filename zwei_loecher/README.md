@@ -1150,6 +1150,43 @@ ohnehin kein ODLRO tragen (7.17, Schritt 8).
 Ohne den zweiten Teil wäre das ausgewählte Paar lokalisiert (Schritt 3). Offen ist, ob die beglaubigte Variante des
 geraden Raupenschritts den Widerspruch ganz aufhebt oder nur abschwächt; das hängt von den Gewichten ab.
 
+### 7.19 Die Löcher wandern einzeln zur neuen Position
+
+Einwand gegen 7.18: Die beiden Löcher müssen nicht als Paar wandern. Es reicht, dass jedes einzeln an die neue
+Position kommt.
+
+1. **Exakt: Ein Schritt mit eigener Reparatur hat ein festes Vorzeichen.** Vorzeichen = (−1)^(n↑) · sgn(π_Loch),
+   n↑ = Zahl der Sprünge, die ein ↑ bewegen. Ein J-Schritt besteht aus zwei Sprüngen; danach vertauscht die
+   Reparatur genau die beiden bewegten Elektronen. Eine Vertauschung gibt es nur zwischen entgegengesetzten Spins.
+   Also bewegt genau einer der beiden Sprünge ein ↑, und jeder solche Schritt trägt −1, in jedem Hintergrund,
+   auch mit Fluktuationen. Eine Bewegung aus solchen Schritten hat das Vorzeichen
+   (−1)^(Zahl der Schritte) · sgn(π_Loch). Der Hintergrund entscheidet nur, welche Schritte möglich sind (Gewichte),
+   nicht ihr Vorzeichen.
+2. **Unter A** (7.18) löschen sich alle anderen Beiträge aus. Übrig bleiben für jedes Loch genau diese Schritte.
+3. **Zwei Löcher wandern unabhängig.** Ein Loch sitzt auf A (↑-Lücke), das andere auf B (↓-Lücke). Wege und Zeiten
+   sind beliebig, die Löcher können weit auseinander sein. Jedes bleibt auf seinem Untergitter (Schrittweite 2),
+   tauschen können die beiden also nicht. Vorzeichen = (−1)^(n₁) · (−1)^(n₂). Die Summe über alle Wege zerfällt in
+   ein Produkt: Transferamplitude = G_A(R) · G_B(R). Beide Lücken haben dieselbe Regel (−1 pro Schritt) und in einem
+   gleichförmigen Hintergrund dieselben Gewichte, also G_A = G_B und
+
+       Paartransfer = G(R)² ≥ 0.
+
+   Wie stark G(R) selbst im Vorzeichen schwankt (das einzelne Loch ist frustriert, −1 pro Dreieck, 7.4), spielt keine
+   Rolle: Der Paartransfer ist auf jeder Entfernung nicht negativ. Numerisch gestützt durch 7.12 (Produktregel 1563
+   von 1563, deckungsgleiche Wege immer +1).
+4. **Rolle der Fluktuationen.** Sie löschen genau die Beiträge aus, deren Vorzeichen vom Hintergrund abhängt. Das
+   sind die Beiträge, die den beiden Partnern verschiedene Vorzeichen geben und das Quadrat zerstören könnten
+   (Paarbrecher). Übrig bleibt ein Vorzeichen, das für beide Partner gleich ist; ihr Produkt ist ein Quadrat.
+5. **Von „nie negativ“ zu ODLRO.** Positivität auf jeder Entfernung ist nötig, reicht aber allein nicht: Für zwei
+   freie Löcher ist G(R)² zwar positiv, fällt aber mit R ab, und eine makroskopische Besetzung des Paarkanals entsteht
+   nicht. Dazu braucht es eine Anziehung zwischen ↑- und ↓-Lücke. Weil der Paarkanal eine Summe von Quadraten ist und
+   nie destruktiv interferiert, reicht jede Anziehung (Cooper-Argument in dieser Sprache). Hinweise auf die
+   Anziehung: 6.1 (mit Vorzeichen gebunden, ohne nicht) und der Raupenschritt, den nur benachbarte Löcher haben
+   (7.13).
+
+Damit ist 7.18, Schritt 2 („schneller Transport nur auf gemeinsamer Spur“) für die Frage nach ODLRO nicht
+entscheidend. Auch einzeln, langsam wandernde Löcher geben einen Paartransfer ohne Auslöschung.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -1293,6 +1330,14 @@ ungerader Menge (gemeinsame Spur, auch mit Abstand) ist aber praktisch lokalisie
 flach, danach liegt die Beweglichkeit bei 2–3 % (gerechnet). Beweglich wird es erst durch beglaubigte
 Vertauschungen (J-Wende mit Reparatur), die den Lochtausch ausgleichen. Fluktuationen geben auch dem geraden
 Raupenschritt, dem einzigen störenden Schritt, eine beglaubigte Variante mit passendem Vorzeichen.
+
+**Einzeln wandernde Löcher (7.19)**
+
+Ein J-Schritt mit eigener Reparatur hat immer genau einen Sprung, der ein ↑ bewegt, also das feste Vorzeichen −1,
+in jedem Hintergrund (exakt). Wandern die beiden Löcher einzeln zur neuen Position, zerfällt die Summe über alle
+Wege in ein Produkt G_A(R) · G_B(R) = G(R)² ≥ 0: Der Paartransfer ist auf jeder Entfernung nicht negativ, wie
+stark G(R) selbst schwankt. Fluktuationen löschen genau die Beiträge aus, die den Partnern verschiedene
+Vorzeichen geben würden. Für ODLRO braucht es zusätzlich eine Anziehung; wegen der Positivität reicht jede.
 
 **Offen**
 
