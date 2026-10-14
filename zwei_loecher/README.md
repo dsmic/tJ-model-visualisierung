@@ -980,6 +980,38 @@ Paartransfers nur vom Ziel abhängt?
    Resonanzen der Singuletts untereinander mit der d-Wellen-Eichung der Paarbewegung verträglich sind. Beides lässt
    sich auf einem kleinen Gitter exakt prüfen.
 
+### 7.16 Idee: Vorzeichen als dynamisches Feld des Hintergrunds
+
+Ausgangspunkt (Beobachtung aus der Diskussion, 7.6): Vertauschungen des Hintergrunds machen schon für ein
+einzelnes Loch beide Vorzeichen erreichbar, mit demselben Anfang und demselben Ende.
+
+1. **Kein Vorzeichen ist fest.** Nach 7.14 ist das Vorzeichen (−1)^(↑ in O) · sgn(π_Loch). Jede Vertauschung,
+   die ein Elektron aus O gegen eines von außerhalb tauscht, dreht es um. Das gilt für jeden Prozess mit
+   nichtleerem O (Einzelloch, J-Wende). Selbst die Raupe ist nur in niedrigster Ordnung starr: Tauscht eine
+   Vertauschung zwischen Kopf- und Schwanzsprung das verschobene Elektron gegen einen Nachbarn aus, werden zwei
+   entgegengesetzte Elektronen je einmal bewegt, und das Vorzeichen kehrt sich um. Bei genügend Bewegung im
+   Hintergrund sind die Vorzeichen also keine Eigenschaft der Lochwege mehr, sondern hängen davon ab, wie der
+   Hintergrund mit den Löchern korreliert ist. Der Hintergrund wirkt wie ein dynamisches Z2-Eichfeld:
+   Welcher Fluss (−1) auf einer geschlossenen Bahn liegt, ist nicht vorgegeben.
+2. **Was der Grundzustand wählt.** Für Bosonen gilt die diamagnetische Ungleichung: Jeder Fluss erhöht die
+   Energie, am tiefsten liegt der flussfreie Fall, in dem sich alle Wege addieren. Paare sind untereinander Bosonen
+   (Platztausch +1, 7.2). Können die Vorzeichen vom Hintergrund eingestellt werden, gewinnen die Paare
+   Bewegungsenergie, wenn der Hintergrund sich so korreliert, dass alle Paarwege konstruktiv sind. Dann bewegen
+   sich die Paare ohne Vorzeichen; nach Perron–Frobenius sind alle Amplituden positiv, und der Paartransfer
+   ⟨Δ†(R)Δ(0)⟩ ist eine Summe positiver Terme. Das ist ODLRO, sobald die Paare beweglich sind.
+3. **Warum Paare und nicht einzelne Löcher.** Ein einzelnes Loch für sich würde ebenfalls flussfreie Wege
+   bevorzugen (für ein Teilchen spielt die Statistik keine Rolle). Viele Löcher sind aber Fermionen: Ihr
+   Tauschvorzeichen kann kein Hintergrund beseitigen, und für Fermionen ist flussfrei nicht automatisch optimal.
+   Nur für Bosonen, also Paare, fällt die Optimierung eindeutig auf „alles konstruktiv“. Der Hintergrund darf
+   dabei einzelnen Löchern einen Fluss π lassen, solange ein Paar 2π = 0 sieht.
+4. **Hinweis in den bisherigen Zahlen.** Je mehr Freiheit der Hintergrund hat, desto weniger frustriert ist die
+   Paarbewegung: 0,708 (sauber) → 0,880 (höchstens eine Fluktuation) → 0,932 (höchstens zwei), Gewicht 0,3, 7.8.
+   Mit zufälligen statt echten Vorzeichen bleibt es bei 0,721. Die Verbesserung kommt also aus der echten
+   Vorzeichenfreiheit, nicht aus Verdünnung. Das ist der Trend, den 1.–2. vorhersagen.
+5. **Was offen ist.** (a) Kosten: Die nötigen Korrelationen des Hintergrunds kosten J-Energie; sie müssen
+   billiger sein als der Gewinn an Paarbewegung. (b) Läuft der Trend aus 4. gegen 1, wenn der Hintergrund noch mehr
+   Freiheit bekommt (drei und mehr Fluktuationen)? (c) Die Vergleichsrechnung für viele einzelne Löcher.
+
 ## 8. Grenzen
 
 - Die Abschnitte 2–4 behandeln Vorzeichen *einzelner* Prozesse. Die Schlüsse auf Verschränkung in
@@ -1092,6 +1124,17 @@ Raupenschritt verschiebt ein Elektron um zwei Plätze geradeaus und streckt dabe
 Hintergrund aus Nachbar-Singuletts bleiben nur die Plakettenbewegungen (Paar und Singulett drehen oder tauschen),
 und die sind alle positiv. Offen: ob der Umweg über ein gestrecktes Singulett und J zurück das richtige Vorzeichen
 trägt, und ob die Resonanzen der Singuletts mit der d-Wellen-Eichung verträglich sind.
+
+**Vorzeichen als dynamisches Feld (7.16)**
+
+Weil Vertauschungen des Hintergrunds für jeden Prozess beide Vorzeichen erreichbar machen (in höherer Ordnung
+selbst für die Raupe), sind die Vorzeichen keine feste Eigenschaft der Lochwege; der Hintergrund wirkt wie ein
+dynamisches Z2-Eichfeld. Für Bosonen ist der flussfreie Fall energetisch am günstigsten (diamagnetische
+Ungleichung). Paare sind Bosonen, also sollte sich der Hintergrund so korrelieren, dass alle Paarwege konstruktiv
+sind; der Paartransfer ist dann eine Summe positiver Terme (ODLRO). Für viele einzelne Löcher (Fermionen) gibt es
+diesen Zwang nicht. Hinweis: Mit mehr Freiheit im Hintergrund sinkt die Frustration der Paarbewegung (7.8), und
+zwar wegen der echten Vorzeichen. Offen: die Energiekosten, der Grenzwert bei mehr Freiheit, der Vergleich mit
+einzelnen Löchern.
 
 **Offen**
 
