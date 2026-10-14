@@ -999,11 +999,9 @@ einzelnes Loch beide Vorzeichen erreichbar, mit demselben Anfang und demselben E
    Bewegungsenergie, wenn der Hintergrund sich so korreliert, dass alle Paarwege konstruktiv sind. Dann bewegen
    sich die Paare ohne Vorzeichen; nach Perron–Frobenius sind alle Amplituden positiv, und der Paartransfer
    ⟨Δ†(R)Δ(0)⟩ ist eine Summe positiver Terme. Das ist ODLRO, sobald die Paare beweglich sind.
-3. **Warum Paare und nicht einzelne Löcher.** Ein einzelnes Loch für sich würde ebenfalls flussfreie Wege
-   bevorzugen (für ein Teilchen spielt die Statistik keine Rolle). Viele Löcher sind aber Fermionen: Ihr
-   Tauschvorzeichen kann kein Hintergrund beseitigen, und für Fermionen ist flussfrei nicht automatisch optimal.
-   Nur für Bosonen, also Paare, fällt die Optimierung eindeutig auf „alles konstruktiv“. Der Hintergrund darf
-   dabei einzelnen Löchern einen Fluss π lassen, solange ein Paar 2π = 0 sieht.
+3. **Warum der Kanal das Paar ist** (korrigiert, siehe 7.17, Schritt 8). Das Tauschvorzeichen der Löcher ist
+   nicht fest; der Hintergrund kann es ausgleichen. Dass ODLRO im Paarkanal erscheint, folgt aus dem
+   Pauli-Prinzip für die Elektronen, nicht aus der Statistik der Löcher.
 4. **Hinweis in den bisherigen Zahlen.** Je mehr Freiheit der Hintergrund hat, desto weniger frustriert ist die
    Paarbewegung: 0,708 (sauber) → 0,880 (höchstens eine Fluktuation) → 0,932 (höchstens zwei), Gewicht 0,3, 7.8.
    Mit zufälligen statt echten Vorzeichen bleibt es bei 0,721. Die Verbesserung kommt also aus der echten
@@ -1056,15 +1054,34 @@ Perron–Frobenius sind dann alle Amplituden des Grundzustands positiv, und ⟨�
 Terme. Auslöschung ist auf keiner Entfernung möglich. Sind die Paare beweglich (kein Kristall), kondensieren sie
 und G(R) → konstant ≠ 0.
 
-**Schritt 8: Warum nicht einzelne Löcher.** Für einzelne Löcher gilt Schritt 5 nicht: Ihr gegenseitiger Tausch
-gibt −1, und das kann kein Hintergrund beseitigen. Der Hintergrund darf einzelnen Löchern Frustration lassen,
-solange Paartransfers konstruktiv sind. Die beiden Löcher eines Paares müssen dabei nicht beisammenbleiben:
-Verdrängt wird die Frustration der Paartransfers, gleich auf welchem Weg die Löcher laufen. Wie groß ein Paar
-wird, entscheidet die Energie.
+**Schritt 8: Warum der Kanal das Paar ist (korrigiert).** Mit „Tausch zweier Löcher“ ist ein geschlossener
+Prozess gemeint, nach dem zwei Löcher auf den Startplätzen des jeweils anderen stehen: sgn(π_Loch) = −1. Dieses
+−1 tritt aber nie allein auf, sondern immer zusammen mit (−1)^(↑ in O); physikalisch ist nur das Produkt.
+- Tauschen die Löcher auf demselben Weg, ist O leer, und es bleibt −1 (7.2).
+- Tauschen sie auf verschiedenen Wegen, hängt das Vorzeichen von O ab. Schon im sauberen Néel gibt es Lochtausch
+  mit Gesamtvorzeichen +1: Pivot hin und Raupe mit Wende zurück vertauschen die beiden Löcher, und das ↑ der
+  bewegten Bindung gleicht das aus (7.3).
+- Mit Fluktuationen ist es nach Schritt 3 verstellbar.
 
-**Kurz:** Fluktuationen machen die Vorzeichen zu einem dynamischen Feld (exakt). Paare sind Bosonen (exakt).
-Bosonen senken ihre Energie, indem sie Frustration verdrängen (Satz für feste Felder). Ein frustrationsfreies
-Bosonensystem hat positive Amplituden und kondensiert (Standard). Die einzige echte Annahme steckt in Schritt 5:
+Die frühere Fassung behauptete, das Tauschvorzeichen einzelner Löcher könne kein Hintergrund beseitigen. Das ist
+falsch: Die Statistik der Löcher ist durch den Hintergrund bekleidet. Das passt zum Phase-String-Bild, in dem
+Löcher als Bosonen beschrieben werden (aus dem Gedächtnis). Schritt 4 und 5 zeichnen Paare daher nicht vor
+einzelnen Löchern aus.
+
+Der Kanal, in dem ODLRO erscheinen kann, ist trotzdem das Paar, und zwar aus einem anderen Grund. Ein Loch
+entsteht durch c_iσ, einen fermionischen Operator. Die Einteilchen-Dichtematrix ⟨c†(R)c(0)⟩ hat nach dem
+Pauli-Prinzip Eigenwerte ≤ 1. Sie kann also keine makroskopische Besetzung und kein ODLRO haben (C. N. Yang, 1962,
+aus dem Gedächtnis). Das erste mögliche ODLRO liegt in der Zweiteilchen-Dichtematrix, dem Paartransfer
+⟨Δ†(R)Δ(0)⟩. Schritte 1–7 dürfen auch die Bewegung einzelner Löcher konstruktiv machen; langreichweitig sichtbar
+wird das nur im Paarkanal. Die Löcher eines Paares müssen dafür nicht beisammenbleiben. Offen ist, ob neben der
+Verdrängung der Frustration noch eine Paarung im Spinhintergrund nötig ist, damit der Paarkanal tatsächlich
+kondensiert.
+
+**Kurz:** Fluktuationen machen die Vorzeichen zu einem dynamischen Feld (exakt). Paare sind Bosonen (exakt); das
+Tauschvorzeichen auch einzelner Löcher ist durch den Hintergrund ausgleichbar (Schritt 8). Bosonen senken ihre
+Energie, indem sie Frustration verdrängen (Satz für feste Felder). Ein frustrationsfreies Bosonensystem hat
+positive Amplituden und kondensiert (Standard). Dass das ODLRO im Paarkanal liegt, folgt aus dem Pauli-Prinzip
+für die Elektronen. Die einzige echte Annahme steckt in Schritt 5:
 Die Verdrängung muss sich energetisch lohnen. Schritt 6 zeigt, dass der Grundzustand im kleinen System genau in
 diese Richtung geht.
 
@@ -1187,8 +1204,9 @@ Weil Vertauschungen des Hintergrunds für jeden Prozess beide Vorzeichen erreich
 selbst für die Raupe), sind die Vorzeichen keine feste Eigenschaft der Lochwege; der Hintergrund wirkt wie ein
 dynamisches Z2-Eichfeld. Für Bosonen ist der flussfreie Fall energetisch am günstigsten (diamagnetische
 Ungleichung). Paare sind Bosonen, also sollte sich der Hintergrund so korrelieren, dass alle Paarwege konstruktiv
-sind; der Paartransfer ist dann eine Summe positiver Terme (ODLRO). Für viele einzelne Löcher (Fermionen) gibt es
-diesen Zwang nicht. Hinweis: Mit mehr Freiheit im Hintergrund sinkt die Frustration der Paarbewegung (7.8), und
+sind; der Paartransfer ist dann eine Summe positiver Terme (ODLRO). Das Tauschvorzeichen auch einzelner Löcher ist
+durch den Hintergrund ausgleichbar (korrigiert in 7.17); dass ODLRO im Paarkanal liegt, folgt aus dem Pauli-Prinzip
+(Einteilchen-Dichtematrix der Elektronen hat Eigenwerte ≤ 1). Hinweis: Mit mehr Freiheit im Hintergrund sinkt die Frustration der Paarbewegung (7.8), und
 zwar wegen der echten Vorzeichen. Offen: die Energiekosten, der Grenzwert bei mehr Freiheit, der Vergleich mit
 einzelnen Löchern.
 
@@ -1197,7 +1215,8 @@ einzelnen Löchern.
 Fluktuationen machen die Vorzeichen zu einem dynamischen Z2-Feld; ohne sie ist die Raupe starr und die
 Paarbewegung frustriert (exakt). Paare sind Bosonen (exakt). Bosonen senken ihre Energie, indem sie Frustration
 verdrängen (diamagnetische Ungleichung, für feste Felder ein Satz). Ohne Frustration sind alle Amplituden positiv,
-und der Paartransfer zeigt ODLRO (Standard). Die einzige Annahme: Die Verdrängung lohnt sich energetisch. Die
+und der Paartransfer zeigt ODLRO (Standard). Das Tauschvorzeichen einzelner Löcher ist ebenfalls ausgleichbar;
+der Kanal ist das Paar, weil die Einteilchen-Dichtematrix der Elektronen nach Pauli kein ODLRO haben kann. Die einzige Annahme: Die Verdrängung lohnt sich energetisch. Die
 gebundene Spinwolke und die sinkende Frustration in 7.8 zeigen, dass der Grundzustand diesen Weg geht.
 
 **Offen**
